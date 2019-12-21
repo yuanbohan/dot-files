@@ -1,0 +1,5 @@
+* Personalconfiguration
+
+** Emacs
+
+** i3-wm

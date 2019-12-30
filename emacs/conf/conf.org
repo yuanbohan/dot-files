@@ -47,6 +47,7 @@
 #+BEGIN_SRC emacs-lisp
   ;; https://stackoverflow.com/questions/294664/how-to-set-the-font-size-in-emacs
   ;; (setq inhibit-startup-screen t) ; hide the welcome screen
+  (setq initial-major-mode 'text-mode)
   (menu-bar-mode -1) ; hide menu bar
   (global-linum-mode -1) ; hide line number
   (tool-bar-mode -1) ; hide tool bar
@@ -296,18 +297,17 @@ If you need it, just `M-x exec-path-from-shell-initialize`
 * paredit
 
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package paredit
-  ;;   :ensure t
-  ;;   :config
-  ;;   (add-hook 'cider-repl-mode-hook       #'enable-paredit-mode)
-  ;;   (add-hook 'cider-mode-hook            #'enable-paredit-mode)
-  ;;   (add-hook 'clojure-mode-hook          #'enable-paredit-mode)
-  ;;   (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
-  ;;   (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
-  ;;   (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
-  ;;   (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-  ;;   (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
-  ;;   (add-hook 'toml-mode-hook             #'enable-paredit-mode))
+  (use-package paredit
+    :ensure t
+    :config
+    (add-hook 'cider-repl-mode-hook       #'enable-paredit-mode)
+    (add-hook 'cider-mode-hook            #'enable-paredit-mode)
+    (add-hook 'clojure-mode-hook          #'enable-paredit-mode)
+    (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+    (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+    (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+    (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+    (add-hook 'scheme-mode-hook           #'enable-paredit-mode))
 #+END_SRC
 
 * smartparens
@@ -405,7 +405,7 @@ If you need it, just `M-x exec-path-from-shell-initialize`
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :ensure t
-    :hook ('after-init . 'global-company-mode)
+    :hook ('prog-mode . 'global-company-mode)
     :config
     (company-tng-configure-default)
     (setq company-idle-delay 0.5)
@@ -423,11 +423,12 @@ If you need it, just `M-x exec-path-from-shell-initialize`
     :init
     (use-package racer
       :ensure t
-      ;; :init (setq racer-rust-src-path
-      ;;             (concat (string-trim
-      ;;                      (shell-command-to-string "rustc --print sysroot"))
-      ;;                     "/lib/rustlib/src/rust/src"))
+      :init (setq racer-rust-src-path
+                  (concat (string-trim
+                           (shell-command-to-string "rustc --print sysroot"))
+                          "/lib/rustlib/src/rust/src"))
       :hook ('rust-mode . 'racer-mode))
+
     (use-package cargo
       :ensure t
       :hook ('rust-mode . 'cargo-minor-mode))
@@ -601,5 +602,6 @@ make this setting at the end of the configuration
   (use-package whitespace-cleanup-mode
     :ensure t
     :bind (("C-c C-SPC". 'whitespace-cleanup))
-    :hook 'after-save)
+    :hook
+    (('prog-mode . 'whitespace-cleanup-mode)))
 #+END_SRC

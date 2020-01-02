@@ -60,7 +60,7 @@
 
 * global set key
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "M-l") 'goto-line)
+  (global-set-key (kbd "s-g") 'goto-line)
 
   ;; manage window
   (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
@@ -286,7 +286,7 @@ If you need it, just `M-x exec-path-from-shell-initialize`
     ;;   :config
     ;;   (all-the-icons-install-fonts))
     :bind
-    (("M-t" . 'neotree-toggle))
+    (("s-t" . 'neotree-toggle))
     :config
     ;; (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
     (setq neo-smart-open t)
@@ -483,7 +483,7 @@ If you need it, just `M-x exec-path-from-shell-initialize`
   (use-package org
     :ensure t
     :bind
-    (("C-c l". 'org-store-link)
+    (("C-c l" . 'org-store-link)
      ("C-c a" . 'org-agenda)
      ("C-c b" . 'org-switchb))
     :config
@@ -569,6 +569,9 @@ If you need it, just `M-x exec-path-from-shell-initialize`
 
   (use-package markdown-mode
     :ensure t)
+
+  (use-package json-mode
+    :ensure t)
 #+END_SRC
 * avy
 [[https://github.com/abo-abo/avy][avy]]
@@ -577,7 +580,7 @@ If you need it, just `M-x exec-path-from-shell-initialize`
   (use-package avy
     :ensure t
     :bind
-    (("M-;" . 'avy-goto-char-2)))
+    (("s-c" . 'avy-goto-char-2)))
 #+END_SRC
 
 * Highlights matching parenthesis

@@ -1,0 +1,12 @@
+* tmux
+
+~tmux source ~/.tmux.conf~ to reload config
+
+* common keys
+
+- ~prefix s~ switch session
+- ~prefix o~ switch pane
+- ~Alt arrow~ switch pane
+
+
+

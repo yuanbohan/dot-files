@@ -4,9 +4,23 @@
 
 * common keys
 
+** session
+
+- ~tmux ls~                       list sessions
+- ~tmux new -s {{name}}~          start a new named tmux session
+- ~tmux a -t {{name}}~            attach to a named session
+- ~tmux kill-session -t {{name}}~ kill session:
+
 - ~prefix s~ switch session
-- ~prefix o~ switch pane
+- ~prefix d~ detach session
+- ~prefix x~ Kill session when attached
+
+** window
+
+- ~Ctrl d~   kill window
+- ~prefix ,~ rename window
+
+** pane
+
+- ~prefix o~  switch pane
 - ~Alt arrow~ switch pane
-
-
-

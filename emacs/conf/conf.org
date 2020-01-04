@@ -52,7 +52,9 @@
   (global-linum-mode -1) ; hide line number
   (tool-bar-mode -1) ; hide tool bar
   (scroll-bar-mode -1) ; hide scroll bar
-  (set-face-attribute 'default nil :height 140) ; default font size
+  (set-face-attribute 'default nil :height 180) ; default font size
+
+  (fset 'yes-or-no-p 'y-or-n-p) ; yes/no -> y/n
 
   (global-hl-line-mode 1) ; highlight current line
   ;; (set-face-background 'hl-line "darkseagreen") ; highlight current line color
@@ -63,10 +65,12 @@
   (global-set-key (kbd "s-g") 'goto-line)
 
   ;; manage window
-  (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
-  (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
-  (global-set-key (kbd "S-C-<down>") 'shrink-window)
-  (global-set-key (kbd "S-C-<up>") 'enlarge-window)
+  (global-set-key (kbd "C-M--") 'shrink-window-horizontally)
+  (global-set-key (kbd "C-M-=") 'enlarge-window-horizontally)
+  (global-set-key (kbd "C-s--") 'shrink-window)
+  (global-set-key (kbd "C-s-=") 'enlarge-window)
+
+  ;; 'window-swap-states' swaps the states of two live windows.
 
   ;; hide show code block
   ;; (add-hook 'prog-mode-hook (lambda () (hs-minor-mode t)))
@@ -132,12 +136,10 @@ If you need it, just `M-x exec-path-from-shell-initialize`
 #+BEGIN_SRC emacs-lisp
   (use-package exec-path-from-shell
     :ensure t
-    ;; :config
-    ;; (when (memq window-system '(mac ns))
-    ;;   (exec-path-from-shell-initialize)
-    ;;   (exec-path-from-shell-copy-envs
-    ;;    '("PATH")))
-    )
+    :config
+    (when (memq window-system '(mac ns))
+      (exec-path-from-shell-initialize)
+      (exec-path-from-shell-copy-envs '("PATH"))))
 #+END_SRC
 
 * yasnippet
@@ -414,6 +416,18 @@ If you need it, just `M-x exec-path-from-shell-initialize`
     (setq company-tooltip-align-annotations t))
 #+END_SRC
 
+* python
+
+#+BEGIN_SRC emacs-lisp
+  (use-package elpy
+    :ensure t
+    :defer t
+    :config
+    (setq elpy-rpc-virtualenv-path 'current)
+    :init
+    (advice-add 'python-mode :before 'elpy-enable))
+#+END_SRC
+
 * rust
 
 #+BEGIN_SRC emacs-lisp
@@ -607,4 +621,44 @@ make this setting at the end of the configuration
     :bind (("C-c C-SPC". 'whitespace-cleanup))
     :hook
     (('prog-mode . 'whitespace-cleanup-mode)))
+#+END_SRC
+* pdf-tools
+
+[[https://github.com/politza/pdf-tools][pdf-tools]]
+
+#+caption: Navigation
+| content                                    | key                   |
+|--------------------------------------------+-----------------------|
+| Scroll Up / Down by page-full              | 	space / backspace |
+| Scroll Up / Down by line                   | 	C-n / C-p         |
+| Scroll Right / Left	                    | C-f / C-b             |
+| Top of Page / Bottom of Page               | 	< / >             |
+| Next Page / Previous Page	              | n / p                 |
+| First Page / Last Page	                 | M-< / M->             |
+| Incremental Search Forward / Backward      | 	C-s / C-r         |
+| Occur (list all lines containing a phrase) | 	M-s o             |
+| Pick a Link and Jump	                   | F                     |
+| Incremental Search in Links	            | f                     |
+| History Back / Forwards	                | B / N                 |
+| Display Outline	                        | o                     |
+| Jump to Page	                           | M-g g                 |
+
+#+caption: Display
+| content                                  | key       |
+|------------------------------------------+-----------|
+| Zoom in / Zoom out	                   | + / -     |
+| Fit Height / Fit Width / Fit Page	    | H / W / P |
+| Trim margins (set slice to bounding box) | 	s b   |
+| Reset margins	s r                     |           |
+| Reset Zoom                               | 	0     |
+
+#+BEGIN_SRC emacs-lisp
+  (use-package tablist
+    :ensure t)
+
+  (use-package pdf-tools
+    :ensure t
+    :config
+    (pdf-loader-install))
+
 #+END_SRC

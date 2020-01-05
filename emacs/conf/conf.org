@@ -422,10 +422,9 @@ If you need it, just `M-x exec-path-from-shell-initialize`
   (use-package elpy
     :ensure t
     :defer t
-    :config
-    (setq elpy-rpc-virtualenv-path 'current)
-    :init
-    (advice-add 'python-mode :before 'elpy-enable))
+    :bind (("C-c M-f" . 'elpy-format-code))
+    :config (setq elpy-rpc-virtualenv-path 'current)
+    :init (advice-add 'python-mode :before 'elpy-enable))
 #+END_SRC
 
 * rust
@@ -450,9 +449,9 @@ If you need it, just `M-x exec-path-from-shell-initialize`
     :config
     (setq rust-format-on-save t)
 
-    :bind (("TAB". 'company-indent-or-complete-common)
-           ("C-c C-b". 'cargo-process-build)
-           ("C-c C-r". 'cargo-process-run)))
+    :bind (("TAB"     . 'company-indent-or-complete-common)
+           ("C-c C-b" . 'cargo-process-build)
+           ("C-c C-r" . 'cargo-process-run)))
 
   (use-package rust-playground
     :ensure t

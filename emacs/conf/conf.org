@@ -136,10 +136,11 @@ If you need it, just `M-x exec-path-from-shell-initialize`
 #+BEGIN_SRC emacs-lisp
   (use-package exec-path-from-shell
     :ensure t
-    :config
-    (when (memq window-system '(mac ns))
-      (exec-path-from-shell-initialize)
-      (exec-path-from-shell-copy-envs '("PATH"))))
+    ;; :config
+    ;; (when (memq window-system '(mac ns))
+    ;;   (exec-path-from-shell-initialize)
+    ;;   (exec-path-from-shell-copy-envs '("PATH")))
+    )
 #+END_SRC
 
 * yasnippet
@@ -237,7 +238,8 @@ If you need it, just `M-x exec-path-from-shell-initialize`
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t
-    :bind (("C-x g" . magit-status)))
+    :bind (("C-x g" . magit-status)
+           ("C-c g" . magit-dispatch-popup)))
 
   ;; (use-package forge
   ;;   :ensure t

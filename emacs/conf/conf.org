@@ -46,16 +46,15 @@
 
 #+BEGIN_SRC emacs-lisp
   ;; https://stackoverflow.com/questions/294664/how-to-set-the-font-size-in-emacs
-  ;; (setq inhibit-startup-screen t) ; hide the welcome screen
+  (setq inhibit-startup-screen t) ; hide the welcome screen
   (setq initial-major-mode 'text-mode)
+  (setq column-number-mode t)
   (menu-bar-mode -1) ; hide menu bar
   (global-linum-mode -1) ; hide line number
   (tool-bar-mode -1) ; hide tool bar
   (scroll-bar-mode -1) ; hide scroll bar
-  (set-face-attribute 'default nil :height 180) ; default font size
-
+  (set-face-attribute 'default nil :height 240) ; default font size
   (fset 'yes-or-no-p 'y-or-n-p) ; yes/no -> y/n
-
   (global-hl-line-mode 1) ; highlight current line
   ;; (set-face-background 'hl-line "darkseagreen") ; highlight current line color
 #+END_SRC
@@ -303,15 +302,15 @@ If you need it, just `M-x exec-path-from-shell-initialize`
 #+BEGIN_SRC emacs-lisp
   (use-package paredit
     :ensure t
-    :config
-    (add-hook 'cider-repl-mode-hook       #'enable-paredit-mode)
-    (add-hook 'cider-mode-hook            #'enable-paredit-mode)
-    (add-hook 'clojure-mode-hook          #'enable-paredit-mode)
-    (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
-    (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
-    (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
-    (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-    (add-hook 'scheme-mode-hook           #'enable-paredit-mode))
+    :hook (('cider-repl-mode          . 'enable-paredit-mode)
+           ('cider-mode               . 'enable-paredit-mode)
+           ('clojure-mode             . 'enable-paredit-mode)
+           ('emacs-lisp-mode          . 'enable-paredit-mode)
+           ('ielm-mode                . 'enable-paredit-mode)
+           ('lisp-mode                . 'enable-paredit-mode)
+           ('lisp-interaction-mode    . 'enable-paredit-mode)
+           ('scheme-mode              . 'enable-paredit-mode)
+           ('haskell-interactive-mode . 'enable-paredit-mode)))
 #+END_SRC
 
 * smartparens
@@ -319,10 +318,11 @@ If you need it, just `M-x exec-path-from-shell-initialize`
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
     :ensure t
-    :hook (('prog-mode        . 'smartparens-mode)
-           ('eshell-mode      . 'smartparens-mode)
-           ('cider-mode       . 'smartparens-mode)
-           ('cider-repl-mode  . 'smartparens-mode))
+    :hook (('prog-mode                . 'smartparens-mode)
+           ('eshell-mode              . 'smartparens-mode)
+           ('cider-mode               . 'smartparens-mode)
+           ('cider-repl-mode          . 'smartparens-mode)
+           ('haskell-interactive-mode . 'smartparens-mode))
     :bind
     (("C-M-a" . 'sp-beginning-of-sexp)
      ("C-M-e" . 'sp-end-of-sexp)
@@ -418,6 +418,58 @@ If you need it, just `M-x exec-path-from-shell-initialize`
     (setq company-tooltip-align-annotations t))
 #+END_SRC
 
+* haskell
+
+#+BEGIN_SRC emacs-lisp
+  (use-package haskell-mode
+    :ensure t
+    :hook ('haskell-mode . 'interactive-haskell-mode)
+    :bind
+    ;; haskell-menu
+    ;; haskell-session-change
+    ;; haskell-session-kill
+    ((:map haskell-mode-map
+           ("M-."     . 'haskell-mode-tag-find)
+           ("C-s-`"   . 'haskell-interactive-bring)
+           ("C-c C-k" . 'haskell-interactive-mode-clear)
+
+           ("C-c C-l" . 'haskell-process-load-or-reload)
+           ("C-c C-t" . 'haskell-process-do-type)
+           ("C-c C-i" . 'haskell-process-do-info)
+
+           ;; ("C-c C-c" . 'haskell-process-cabal-build)
+           ;; ("C-c c"   . 'haskell-process-cabal)
+           )
+     (:map haskell-interactive-mode-map
+           ("C-c C-v" . 'haskell-interactive-toggle-print-mode)
+           ("C-c C-c" . 'haskell-process-interrupt)))
+
+    :config
+    (require 'haskell-interactive-mode)
+    (require 'haskell-process)
+
+    ;; (setq haskell-stylish-on-save t) ; stack install stylish-haskell
+    (setq haskell-tags-on-save t) ; stack install hasktags
+
+    ;; auto, ghci, cabal-repl, cabal-new-repl, or stack-ghci
+    (setq haskell-process-type 'stack-ghci)
+    (setq haskell-process-suggest-remove-import-lines t)
+    (setq haskell-process-auto-import-loaded-modules t)
+    (setq haskell-process-log t))
+
+  (use-package format-all
+    :ensure t
+    :hook ('haskell-mode . 'format-all-mode))
+
+  ;; stack install hindent
+  ;; (use-package hindent
+  ;;   :ensure t
+  ;;   :after haskell-mode
+  ;;   ;; M-q   reformats the current declaration.
+  ;;   ;; C-M-\ reformats the current region.
+  ;;   :hook ('haskell-mode . 'hindent-mode))
+#+END_SRC
+
 * python
 
 #+BEGIN_SRC emacs-lisp
@@ -457,7 +509,7 @@ If you need it, just `M-x exec-path-from-shell-initialize`
 
   (use-package rust-playground
     :ensure t
-    :after rust)
+    :after rust-mode)
 #+END_SRC
 
 * expand region
@@ -465,7 +517,8 @@ If you need it, just `M-x exec-path-from-shell-initialize`
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
     :ensure t
-    :bind (("C-=". 'er/expand-region)))
+    :bind
+    ("C-=". 'er/expand-region))
 #+END_SRC
 
 * chinese input on gnu/linux
@@ -507,6 +560,7 @@ If you need it, just `M-x exec-path-from-shell-initialize`
     (setq org-html-checkbox-type 'html)
     (setq org-log-done 'time)
     (setq org-hide-emphasis-markers t)
+    (setq org-image-actual-width nil)
     (setq org-todo-keywords
           '((sequence "TODO" "DOING"  "|" "DONE" "CANCEL"))))
 
@@ -532,7 +586,8 @@ If you need it, just `M-x exec-path-from-shell-initialize`
     :after org
     :config
     (setq org-reveal-mathjax t)
-    (setq org-reveal-root "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/"))
+    ;; (setq org-reveal-root "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/")
+    (setq org-reveal-root "/home/yuanbo/workspace/github.com/reveal.js"))
 #+END_SRC
 
 * powerline
@@ -568,10 +623,10 @@ If you need it, just `M-x exec-path-from-shell-initialize`
   ;; C-x u
   ;; C-_  (`undo-tree-undo') Undo changes.
   ;; M-_  (`undo-tree-redo') Redo changes.
-  (use-package undo-tree
-    :ensure t
-    :init
-    (global-undo-tree-mode))
+  ;; (use-package undo-tree
+  ;;   :ensure t
+  ;;   :init
+  ;;   (global-undo-tree-mode))
 #+END_SRC
 
 * misc packages
@@ -630,28 +685,28 @@ make this setting at the end of the configuration
 #+caption: Navigation
 | content                                    | key                   |
 |--------------------------------------------+-----------------------|
-| Scroll Up / Down by page-full              | 	space / backspace |
-| Scroll Up / Down by line                   | 	C-n / C-p         |
-| Scroll Right / Left	                    | C-f / C-b             |
-| Top of Page / Bottom of Page               | 	< / >             |
-| Next Page / Previous Page	              | n / p                 |
-| First Page / Last Page	                 | M-< / M->             |
-| Incremental Search Forward / Backward      | 	C-s / C-r         |
-| Occur (list all lines containing a phrase) | 	M-s o             |
-| Pick a Link and Jump	                   | F                     |
-| Incremental Search in Links	            | f                     |
-| History Back / Forwards	                | B / N                 |
-| Display Outline	                        | o                     |
-| Jump to Page	                           | M-g g                 |
+| Scroll Up / Down by page-full              |  space / backspace |
+| Scroll Up / Down by line                   |  C-n / C-p         |
+| Scroll Right / Left                       | C-f / C-b             |
+| Top of Page / Bottom of Page               |  < / >             |
+| Next Page / Previous Page               | n / p                 |
+| First Page / Last Page                     | M-< / M->             |
+| Incremental Search Forward / Backward      |  C-s / C-r         |
+| Occur (list all lines containing a phrase) |  M-s o             |
+| Pick a Link and Jump                     | F                     |
+| Incremental Search in Links               | f                     |
+| History Back / Forwards                   | B / N                 |
+| Display Outline                           | o                     |
+| Jump to Page                             | M-g g                 |
 
 #+caption: Display
 | content                                  | key       |
 |------------------------------------------+-----------|
-| Zoom in / Zoom out	                   | + / -     |
-| Fit Height / Fit Width / Fit Page	    | H / W / P |
-| Trim margins (set slice to bounding box) | 	s b   |
+| Zoom in / Zoom out                       | + / -     |
+| Fit Height / Fit Width / Fit Page     | H / W / P |
+| Trim margins (set slice to bounding box) |    s b   |
 | Reset margins	s r                     |           |
-| Reset Zoom                               | 	0     |
+| Reset Zoom                               |    0     |
 
 #+BEGIN_SRC emacs-lisp
   (use-package tablist

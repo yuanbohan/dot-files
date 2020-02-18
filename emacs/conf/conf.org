@@ -53,7 +53,8 @@
   (global-linum-mode -1) ; hide line number
   (tool-bar-mode -1) ; hide tool bar
   (scroll-bar-mode -1) ; hide scroll bar
-  (set-face-attribute 'default nil :height 240) ; default font size
+  ;; (set-face-attribute 'default nil :height 240) ; default font size
+  (set-frame-font "JetBrains Mono 24" nil t) ; https://www.jetbrains.com/lp/mono/
   (fset 'yes-or-no-p 'y-or-n-p) ; yes/no -> y/n
   (global-hl-line-mode 1) ; highlight current line
   ;; (set-face-background 'hl-line "darkseagreen") ; highlight current line color
@@ -423,6 +424,11 @@ If you need it, just `M-x exec-path-from-shell-initialize`
 #+BEGIN_SRC emacs-lisp
   (use-package haskell-mode
     :ensure t
+
+    ;;;; https://haskell-lang.org/intero
+    ;; :hook ('haskell-mode . 'intero-mode)
+
+    ;;;; http://haskell.github.io/haskell-mode/
     :hook ('haskell-mode . 'interactive-haskell-mode)
     :bind
     ;; haskell-menu

@@ -482,7 +482,11 @@ If you need it, just `M-x exec-path-from-shell-initialize`
   (use-package elpy
     :ensure t
     :defer t
-    :bind (("C-c M-f" . 'elpy-format-code))
+    ;; M-<right> / M-<left> move block right/left
+    ;; M-<up>    / M-<down> move block up/down
+    :bind (("C-c M-f" . 'elpy-format-code)
+           ("C-M-n" . 'elpy-nav-forward-block)
+           ("C-M-p" . 'elpy-nav-backward-block))
     :config (setq elpy-rpc-virtualenv-path 'current)
     :init (advice-add 'python-mode :before 'elpy-enable))
 #+END_SRC

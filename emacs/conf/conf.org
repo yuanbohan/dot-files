@@ -58,6 +58,13 @@
   (fset 'yes-or-no-p 'y-or-n-p) ; yes/no -> y/n
   (global-hl-line-mode 1) ; highlight current line
   ;; (set-face-background 'hl-line "darkseagreen") ; highlight current line color
+
+  ;;;; trailing whitespace
+  ;; https://stackoverflow.com/questions/34531831/highlighting-trailing-whitespace-in-emacs-without-changing-character
+  (setq-default show-trailing-whitespace t)
+  ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Useless-Whitespace.html
+  ;; (global-whitespace-mode)
+  ;; (setq whitespace-style '(face trailing lines tabs big-indent))
 #+END_SRC
 
 * global set key

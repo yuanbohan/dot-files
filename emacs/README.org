@@ -1,6 +1,10 @@
 * Personal Emacs configuration
 
-I use org file to config my emacs, which makes configuration clean. move ~dot-emacs~ to your home directory and rename to ~.emacs~ and restart your emacs
+I use org file to config my emacs, which makes configuration clean. 
+
+move ~emacs~ to your home directory and rename to ~.emacs~ and restart your emacs
+
+NOTE: it WILL fail at first time because of the dependencies. Don't worry, just comment the packages you don't need and restart your Emacs again.
 
 - I use GNU Emacs
 - make sure you can connect to melpa

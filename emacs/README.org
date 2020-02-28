@@ -1,14 +1,15 @@
-* Personal Emacs configuration
+* Emacs Configuration
 
-I use org file to config my emacs, which makes configuration clean. 
-
-move ~emacs~ to your home directory and rename to ~.emacs~ and restart your emacs
-
-NOTE: it WILL fail at first time because of the dependencies. Don't worry, just comment the packages you don't need and restart your Emacs again.
+move ~dot-emacs~ to your home directory, rename to ~.emacs~, and restart your emacs
 
 - I use GNU Emacs
 - make sure you can connect to melpa
 - comment package you don't need in ~conf.org~ to speed up
+
+NOTE:
+
+- directly use ~org~ format file to config emacs, not just for readme.
+- there are ~heavy~ packages, before you restart emacs, you'd better comment the packages you don't need
 
 ** major prod mode
 
@@ -17,6 +18,8 @@ NOTE: it WILL fail at first time because of the dependencies. Don't worry, just 
 - [X] Python
 - [X] Haskell
 - [ ] Golang
+- [X] \LaTeX
+
 
 ** Reference
 

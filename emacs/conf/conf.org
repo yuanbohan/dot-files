@@ -158,8 +158,9 @@ If you need it, just `M-x exec-path-from-shell-initialize`
     :config
     (yas-reload-all)
     (setq yas-wrap-around-region t)
-    :hook (('prog-mode . 'yas-minor-mode)
-           ('org-mode  . 'yas-minor-mode)))
+    :hook (('prog-mode  . 'yas-minor-mode)
+           ('org-mode   . 'yas-minor-mode)
+           ('LaTeX-mode . 'yas-minor-mode)))
 
   (use-package yasnippet-snippets
     :ensure t
@@ -327,6 +328,7 @@ If you need it, just `M-x exec-path-from-shell-initialize`
   (use-package smartparens
     :ensure t
     :hook (('prog-mode                . 'smartparens-mode)
+           ('LaTeX-mode               . 'smartparens-mode)
            ('eshell-mode              . 'smartparens-mode)
            ('cider-mode               . 'smartparens-mode)
            ('cider-repl-mode          . 'smartparens-mode)
@@ -734,4 +736,42 @@ make this setting at the end of the configuration
     :config
     (pdf-loader-install))
 
+#+END_SRC
+* latex
+
+[[https://www.tug.org/texlive/][texlive installation]] (~sudo apt install texlive-full~ is ok on Ubuntu 18.04)
+[[https://www.latex-tutorial.com/][latex tutorials]]
+[[https://www.emacswiki.org/emacs/AUCTeX][emacs wiki]]
+[[https://tex.stackexchange.com/questions/339/latex-editors-ides][tex.stackexchange]]
+[[https://tex.stackexchange.com/questions/20843/useful-shortcuts-or-key-bindings-or-predefined-commands-for-emacsauctex/21026#21026][key bindings]]
+
+~C-c C-c~: to run LaTeX over your document, ~C-c C-c~ again to view it
+~C-c C-a~: to run LaTeX and eventually opens the output document in the viewer. It is like running C-c C-c repeatedly, but with just a single key binding.
+~C-c `~  : to see the errors.
+~C-c C-v~: view document (without compiling)
+
+~C-c C-s~: create section with optional label
+~C-c C-e~: create environment (\begin and \end tags) choose from an autocomplete list or type your own
+~C-c .~  : mark current environment
+~C-c *~  : mark current section/subsection
+~C-c ]~  : close current environment
+~C-c ;~  : comment/uncomment region
+
+~C-M-a~  : find matching begin environment, ~C-M-e~ find matching end
+
+[[https://github.com/jwiegley/use-package/issues/379][use-package issue about auctex]]
+#+BEGIN_SRC emacs-lisp
+  (use-package latex
+    :ensure auctex
+    :config
+    (setq TeX-auto-save t)
+    (setq TeX-parse-self t)
+    (setq TeX-PDF-mode t)
+    (setq reftex-plug-into-AUCTeX t)
+    (setq-default TeX-master nil)
+    :hook
+    (('LaTeX-mode . 'visual-line-mode)
+     ('LaTeX-mode . 'flyspell-mode)
+     ('LaTeX-mode . 'latex-math-mode)
+     ('LaTeX-mode . 'turn-on-reftex)))
 #+END_SRC

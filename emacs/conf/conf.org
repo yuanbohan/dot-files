@@ -158,9 +158,10 @@ If you need it, just `M-x exec-path-from-shell-initialize`
     :config
     (yas-reload-all)
     (setq yas-wrap-around-region t)
-    :hook (('prog-mode  . 'yas-minor-mode)
-           ('org-mode   . 'yas-minor-mode)
-           ('LaTeX-mode . 'yas-minor-mode)))
+    :hook (('prog-mode     . 'yas-minor-mode)
+           ('org-mode      . 'yas-minor-mode)
+           ('LaTeX-mode    . 'yas-minor-mode)
+           ('markdown-mode . 'yas-minor-mode)))
 
   (use-package yasnippet-snippets
     :ensure t

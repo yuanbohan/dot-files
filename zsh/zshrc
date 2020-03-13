@@ -2,7 +2,7 @@
 export PATH=~/.local/bin:$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/yuanbo/.oh-my-zsh"
+export ZSH="~/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -97,6 +97,10 @@ export LANG=en_US.UTF-8
 #
 # Example aliases
 alias zshconfig="source ~/.zshrc"
+alias lh="ll -h"
+
+# proxy
+export no_proxy="localhost, 127.0.0.1, local, ::1,"
 
 # rust
 export PATH=$HOME/.cargo/bin:$PATH
@@ -116,10 +120,10 @@ source ~/.local/bin/virtualenvwrapper.sh
 export GOPATH=$HOME/go-place
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/yuanbo/.sdkman"
-[[ -s "/home/yuanbo/.sdkman/bin/sdkman-init.sh" ]] && source "/home/yuanbo/.sdkman/bin/sdkman-init.sh"
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_OPTS="--height 80% --layout=reverse --border"
+alias fzfp="fzf --preview='bat --style=numbers --color=always {} | head -500'"

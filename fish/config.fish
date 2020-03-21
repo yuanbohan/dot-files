@@ -20,5 +20,9 @@ set -x ETCDCTL_API 3
 # export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
 # source ~/.local/bin/virtualenvwrapper.sh
 
-# fish
+# autojump
 if test -f /home/bobo/.autojump/share/autojump/autojump.fish; . /home/bobo/.autojump/share/autojump/autojump.fish; end
+
+# hide greeting
+function fish_greeting
+end

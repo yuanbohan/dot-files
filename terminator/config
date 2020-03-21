@@ -1,4 +1,5 @@
 [global_config]
+  borderless = True
   title_font = JetBrains Mono 20
   title_use_system_font = False
 [keybindings]
@@ -18,6 +19,8 @@
     copy_on_selection = True
     cursor_color = "#aaaaaa"
     font = JetBrains Mono 20
+    scroll_on_keystroke = False
     scrollback_lines = 5000
+    scrollbar_position = hidden
     show_titlebar = False
     use_system_font = False

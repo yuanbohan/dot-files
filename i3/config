@@ -167,4 +167,7 @@ bindsym $mod+Ctrl+x exec emacs
 bindsym $mod+Ctrl+s exec flameshot gui
 
 ## wallpaper
-exec_always --no-startup-id feh --bg-scale ~/Pictures/archlinux_wallpaper1.png
+exec_always --no-startup-id feh --bg-scale ~/Pictures/emacs_wallpaper2.png
+
+# compton
+exec_always --no-startup-id compton -f

@@ -1,4 +1,6 @@
 [global_config]
+  always_on_top = True
+  always_split_with_profile = True
   borderless = True
   title_font = JetBrains Mono 20
   title_use_system_font = False
@@ -15,7 +17,7 @@
 [plugins]
 [profiles]
   [[default]]
-    background_darkness = 0.39
+    background_darkness = 0.75
     background_type = transparent
     copy_on_selection = True
     cursor_color = "#aaaaaa"

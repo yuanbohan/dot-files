@@ -1,15 +1,8 @@
-* Personal Configuration
+#+OPTIONS: toc:nil date:nil timestamp:nil
+#+TITLE: dot files
+#+AUTHOR: Yuanbo Han
 
-** emacs
+archlinux with i3wm, emacs, terminator, fish
 
-** i3-wm
-
-** tmux
-
-** vimium
-
-** zsh
-
-** terminator
-
-** fish
+#+caption: archlinux with i3,emacs,terminator,fish
+[[./screenshot.png]]

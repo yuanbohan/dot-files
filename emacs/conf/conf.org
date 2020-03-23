@@ -45,7 +45,6 @@
 * UI related
 
 #+BEGIN_SRC emacs-lisp
-  ;; https://stackoverflow.com/questions/294664/how-to-set-the-font-size-in-emacs
   (setq inhibit-startup-screen t) ; hide the welcome screen
   (setq initial-major-mode 'text-mode)
   (setq column-number-mode t)
@@ -65,6 +64,10 @@
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Useless-Whitespace.html
   ;; (global-whitespace-mode)
   ;; (setq whitespace-style '(face trailing lines tabs big-indent))
+
+  ;; transparency
+  (set-frame-parameter (selected-frame) 'alpha '(95 100))
+  (add-to-list 'default-frame-alist '(alpha 95 100))
 #+END_SRC
 
 * global set key
@@ -137,17 +140,14 @@
 
 * exec-path-from-shell
 
-In order to speed emacs startup, I comment the config.
-If you need it, just `M-x exec-path-from-shell-initialize`
-
 #+BEGIN_SRC emacs-lisp
   (use-package exec-path-from-shell
     :ensure t
-    ;; :config
-    ;; (when (memq window-system '(mac ns))
-    ;;   (exec-path-from-shell-initialize)
-    ;;   (exec-path-from-shell-copy-envs '("PATH")))
-    )
+    :config
+    (when (memq window-system '(mac ns x))
+      (exec-path-from-shell-initialize)
+      ;; (exec-path-from-shell-copy-envs '("PATH"))
+      ))
 #+END_SRC
 
 * yasnippet
@@ -348,6 +348,82 @@ If you need it, just `M-x exec-path-from-shell-initialize`
   :hook ('prog-mode . 'rainbow-delimiters-mode))
 #+END_SRC
 
+* language server protocol
+
+[[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
+
+~lsp-workspace-folder-remove~
+~lsp-workspace-folder-add~
+
+#+caption: keybindings
+| Keybinding | Description                                                                                                              |
+|------------+--------------------------------------------------------------------------------------------------------------------------|
+| prefix s s | 	Entry point for the server startup.                                                                                  |
+| prefix s r | 	Restart language server                                                                                              |
+| prefix s q | 	Shutdown language server                                                                                             |
+| prefix s d | 	Describes current session                                                                                            |
+| prefix s D | 	Disconnect the buffer from the language server keeping the server running.                                           |
+| prefix = = | 	Ask the server to format this document.                                                                              |
+| prefix = r | 	Ask the server to format the region, or if none is selected, the current line.                                       |
+| prefix F a | 	Add new project root to the list of workspace folders.                                                               |
+| prefix F r | 	Remove project root from the list of workspace folders.                                                              |
+| prefix F b | 	Remove project root from the workspace blacklist.                                                                    |
+| prefix T l | 	Toggle code-lens overlays.                                                                                           |
+| prefix T L | 	Toggle client-server protocol logging.                                                                               |
+| prefix T h | 	Toggle symbol highlighting.                                                                                          |
+| prefix T S | 	Toggle minor mode for showing information for current line in sideline. (requires lsp-ui)                            |
+| prefix T d | 	Toggle minor mode for showing hover information in child frame. (requires lsp-ui)                                    |
+| prefix T s | 	Toggle signature auto activate.                                                                                      |
+| prefix T f | 	Toggle on type formatting.                                                                                           |
+| prefix T T | 	Toggle global minor mode for synchronizing lsp-mode workspace folders and treemacs projects. (requires lsp-treemacs) |
+| prefix g g | 	Find definitions of the symbol under point.                                                                          |
+| prefix g r | 	Find references of the symbol under point.                                                                           |
+| prefix g i | 	Find implementations of the symbol under point.                                                                      |
+| prefix g t | 	Find type definitions of the symbol under point.                                                                     |
+| prefix g d | 	Find declarations of the symbol under point.                                                                         |
+| prefix g h | 	Show the incoming call hierarchy for the symbol at point. (requires lsp-treemacs)                                    |
+| prefix g a | 	Find all meaningful symbols that match pattern.                                                                      |
+| prefix h h | 	Display the type signature and documentation of the thing at                                                         |
+| prefix h s | 	Activate signature help.                                                                                             |
+| prefix h g | 	Trigger display hover information popup and hide it on next typing.                                                  |
+| prefix r r | 	Rename the symbol (and all references to it).                                                                        |
+| prefix r o | 	Perform the source.organizeImports code action, if available.                                                        |
+| prefix a a | 	Execute code action action.                                                                                          |
+| prefix a l | 	Click lsp lens using ‘avy’ package.                                                                                  |
+| prefix a h | 	Highlight symbol at point.                                                                                           |
+| prefix G g | 	Peek definitions to the identifier at point. (requires lsp-ui)                                                       |
+| prefix G r | 	Peek references to the identifier at point. (requires lsp-ui)                                                        |
+| prefix G i | 	Peek implementation locations of the symbol at point. (requires lsp-ui)                                              |
+| prefix G s | 	Peek symbols in the worskpace. (requires lsp-ui)                                                                     |
+
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode
+    :ensure t
+    :hook
+    (('lsp-mode    . 'lsp-enable-which-key-integration)
+     ('rust-mode   . 'lsp)
+     ;; ('python-mode . 'lsp) ;; elpy is better than pyls
+     )
+    :init
+    (setq lsp-keymap-prefix "s-p"))
+
+  (use-package lsp-ui
+    :ensure t
+    :after lsp-mode)
+
+  (use-package company-lsp
+    :ensure t
+    :after lsp-mode)
+
+  (use-package flycheck
+    :ensure t
+    :after lsp-mode)
+
+  (use-package lsp-ivy
+    :ensure t
+    :after lsp-mode)
+#+END_SRC
+
 * clojure and cider
 
 #+BEGIN_SRC emacs-lisp
@@ -404,6 +480,35 @@ If you need it, just `M-x exec-path-from-shell-initialize`
     (setq cider-repl-display-help-banner nil))
 #+END_SRC
 
+* python
+
+#+BEGIN_SRC emacs-lisp
+  (defun python-mode-before-save-hook ()
+    (when (eq major-mode 'python-mode)
+      (elpy-format-code)))
+
+  (use-package elpy
+    :ensure t
+    :defer t
+    ;; M-<right> / M-<left> move block right/left
+    ;; M-<up>    / M-<down> move block up/down
+    :bind (("C-c M-f" . 'elpy-format-code)
+           ("C-M-n"   . 'elpy-nav-forward-block)
+           ("C-M-p"   . 'elpy-nav-backward-block))
+    :config (setq elpy-rpc-virtualenv-path 'current)
+    :hook ('before-save . #'python-mode-before-save-hook)
+    :init (advice-add 'python-mode :before 'elpy-enable))
+#+END_SRC
+
+* rust
+
+#+BEGIN_SRC emacs-lisp
+  (use-package rust-mode
+    :ensure t
+    :config
+    (setq rust-format-on-save t))
+#+END_SRC
+
 * company
 
 #+BEGIN_SRC emacs-lisp
@@ -418,109 +523,6 @@ If you need it, just `M-x exec-path-from-shell-initialize`
     (setq company-tooltip-align-annotations t))
 #+END_SRC
 
-* haskell
-
-#+BEGIN_SRC emacs-lisp
-  (use-package haskell-mode
-    :ensure t
-
-    ;;;; https://haskell-lang.org/intero
-    ;; :hook ('haskell-mode . 'intero-mode)
-
-    ;;;; http://haskell.github.io/haskell-mode/
-    :hook ('haskell-mode . 'interactive-haskell-mode)
-    :bind
-    ;; haskell-menu
-    ;; haskell-session-change
-    ;; haskell-session-kill
-    ((:map haskell-mode-map
-           ("M-."     . 'haskell-mode-tag-find)
-           ("C-s-`"   . 'haskell-interactive-bring)
-           ("C-c C-k" . 'haskell-interactive-mode-clear)
-
-           ("C-c C-l" . 'haskell-process-load-or-reload)
-           ("C-c C-t" . 'haskell-process-do-type)
-           ("C-c C-i" . 'haskell-process-do-info)
-
-           ;; ("C-c C-c" . 'haskell-process-cabal-build)
-           ;; ("C-c c"   . 'haskell-process-cabal)
-           )
-     (:map haskell-interactive-mode-map
-           ("C-c C-v" . 'haskell-interactive-toggle-print-mode)
-           ("C-c C-c" . 'haskell-process-interrupt)))
-
-    :config
-    (require 'haskell-interactive-mode)
-    (require 'haskell-process)
-
-    ;; (setq haskell-stylish-on-save t) ; stack install stylish-haskell
-    (setq haskell-tags-on-save t) ; stack install hasktags
-
-    ;; auto, ghci, cabal-repl, cabal-new-repl, or stack-ghci
-    (setq haskell-process-type 'stack-ghci)
-    (setq haskell-process-suggest-remove-import-lines t)
-    (setq haskell-process-auto-import-loaded-modules t)
-    (setq haskell-process-log t))
-
-  (use-package format-all
-    :ensure t
-    :hook ('haskell-mode . 'format-all-mode))
-
-  ;; stack install hindent
-  ;; (use-package hindent
-  ;;   :ensure t
-  ;;   :after haskell-mode
-  ;;   ;; M-q   reformats the current declaration.
-  ;;   ;; C-M-\ reformats the current region.
-  ;;   :hook ('haskell-mode . 'hindent-mode))
-#+END_SRC
-
-* python
-
-#+BEGIN_SRC emacs-lisp
-  (use-package elpy
-    :ensure t
-    :defer t
-    ;; M-<right> / M-<left> move block right/left
-    ;; M-<up>    / M-<down> move block up/down
-    :bind (("C-c M-f" . 'elpy-format-code)
-           ("C-M-n" . 'elpy-nav-forward-block)
-           ("C-M-p" . 'elpy-nav-backward-block))
-    :config (setq elpy-rpc-virtualenv-path 'current)
-    :init (advice-add 'python-mode :before 'elpy-enable))
-#+END_SRC
-
-* rust
-
-#+BEGIN_SRC emacs-lisp
-  (use-package rust-mode
-    :ensure t
-
-    :init
-    (use-package racer
-      :ensure t
-      :init (setq racer-rust-src-path
-                  (concat (string-trim
-                           (shell-command-to-string "rustc --print sysroot"))
-                          "/lib/rustlib/src/rust/src"))
-      :hook ('rust-mode . 'racer-mode))
-
-    (use-package cargo
-      :ensure t
-      :hook ('rust-mode . 'cargo-minor-mode))
-
-    :config
-    (setq rust-format-on-save t)
-
-    :bind (("TAB"     . 'company-indent-or-complete-common)
-           ("C-c C-b" . 'cargo-process-build)
-           ("C-c C-r" . 'cargo-process-run)))
-
-  (use-package rust-playground
-    :ensure t
-    :after rust-mode)
-#+END_SRC
-
 * expand region
 
 #+BEGIN_SRC emacs-lisp
@@ -528,22 +530,6 @@ If you need it, just `M-x exec-path-from-shell-initialize`
     :ensure t
     :bind
     ("C-=". 'er/expand-region))
-#+END_SRC
-
-* chinese input on gnu/linux
-
-#+BEGIN_SRC emacs-lisp
-  ;; https://github.com/tumashu/pyim
-  (use-package pyim
-    :ensure t
-    :if (string-equal system-type "gnu/linux")
-    :config
-    (use-package pyim-basedict
-      :ensure t
-      :config (pyim-basedict-enable))
-    (setq default-input-method "pyim")
-    ;; (setq pyim-default-scheme 'quanpin) ;; 全拼
-    :bind (("C-\\". 'toggle-input-method)))
 #+END_SRC
 
 * rest client
@@ -692,30 +678,30 @@ make this setting at the end of the configuration
 [[https://github.com/politza/pdf-tools][pdf-tools]]
 
 #+caption: Navigation
-| content                                    | key                   |
-|--------------------------------------------+-----------------------|
-| Scroll Up / Down by page-full              |  space / backspace |
-| Scroll Up / Down by line                   |  C-n / C-p         |
-| Scroll Right / Left                       | C-f / C-b             |
-| Top of Page / Bottom of Page               |  < / >             |
-| Next Page / Previous Page               | n / p                 |
-| First Page / Last Page                     | M-< / M->             |
-| Incremental Search Forward / Backward      |  C-s / C-r         |
-| Occur (list all lines containing a phrase) |  M-s o             |
-| Pick a Link and Jump                     | F                     |
-| Incremental Search in Links               | f                     |
-| History Back / Forwards                   | B / N                 |
-| Display Outline                           | o                     |
-| Jump to Page                             | M-g g                 |
+| content                                    | key               |
+|--------------------------------------------+-------------------|
+| Scroll Up / Down by page-full              | space / backspace |
+| Scroll Up / Down by line                   | C-n / C-p         |
+| Scroll Right / Left                        | C-f / C-b         |
+| Top of Page / Bottom of Page               | < / >             |
+| Next Page / Previous Page                  | n / p             |
+| First Page / Last Page                     | M-< / M->         |
+| Incremental Search Forward / Backward      | C-s / C-r         |
+| Occur (list all lines containing a phrase) | M-s o             |
+| Pick a Link and Jump                       | F                 |
+| Incremental Search in Links                | f                 |
+| History Back / Forwards                    | B / N             |
+| Display Outline                            | o                 |
+| Jump to Page                               | M-g g             |
 
 #+caption: Display
 | content                                  | key       |
 |------------------------------------------+-----------|
 | Zoom in / Zoom out                       | + / -     |
-| Fit Height / Fit Width / Fit Page     | H / W / P |
-| Trim margins (set slice to bounding box) |    s b   |
-| Reset margins	s r                     |           |
-| Reset Zoom                               |    0     |
+| Fit Height / Fit Width / Fit Page        | H / W / P |
+| Trim margins (set slice to bounding box) | s b       |
+| Reset margins                            | s r       |
+| Reset Zoom                               | 0         |
 
 #+BEGIN_SRC emacs-lisp
   (use-package tablist
@@ -726,42 +712,4 @@ make this setting at the end of the configuration
     :config
     (pdf-loader-install))
 
-#+END_SRC
-* latex
-
-[[https://www.tug.org/texlive/][texlive installation]] (~sudo apt install texlive-full~ is ok on Ubuntu 18.04)
-[[https://www.latex-tutorial.com/][latex tutorials]]
-[[https://www.emacswiki.org/emacs/AUCTeX][emacs wiki]]
-[[https://tex.stackexchange.com/questions/339/latex-editors-ides][tex.stackexchange]]
-[[https://tex.stackexchange.com/questions/20843/useful-shortcuts-or-key-bindings-or-predefined-commands-for-emacsauctex/21026#21026][key bindings]]
-
-~C-c C-c~: to run LaTeX over your document, ~C-c C-c~ again to view it
-~C-c C-a~: to run LaTeX and eventually opens the output document in the viewer. It is like running C-c C-c repeatedly, but with just a single key binding.
-~C-c `~  : to see the errors.
-~C-c C-v~: view document (without compiling)
-
-~C-c C-s~: create section with optional label
-~C-c C-e~: create environment (\begin and \end tags) choose from an autocomplete list or type your own
-~C-c .~  : mark current environment
-~C-c *~  : mark current section/subsection
-~C-c ]~  : close current environment
-~C-c ;~  : comment/uncomment region
-
-~C-M-a~  : find matching begin environment, ~C-M-e~ find matching end
-
-[[https://github.com/jwiegley/use-package/issues/379][use-package issue about auctex]]
-#+BEGIN_SRC emacs-lisp
-  (use-package latex
-    :ensure auctex
-    :config
-    (setq TeX-auto-save t)
-    (setq TeX-parse-self t)
-    (setq TeX-PDF-mode t)
-    (setq reftex-plug-into-AUCTeX t)
-    (setq-default TeX-master nil)
-    :hook
-    (('LaTeX-mode . 'visual-line-mode)
-     ('LaTeX-mode . 'flyspell-mode)
-     ('LaTeX-mode . 'latex-math-mode)
-     ('LaTeX-mode . 'turn-on-reftex)))
 #+END_SRC

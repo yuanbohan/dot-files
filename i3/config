@@ -142,6 +142,12 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+# https://faq.i3wm.org/question/3747/enabling-multimedia-keys.1.html
+# Pulse Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 1 +5% # increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 1 -5% # decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 1 toggle # mute sound
+
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
@@ -150,7 +156,7 @@ bar {
 }
 
 # Add gaps between windows look nicer
-gaps inner 15
+gaps inner 10
 gaps outer 5
 
 ## my key bindings

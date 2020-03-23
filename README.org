@@ -2,20 +2,14 @@
 
 ** emacs
 
-I use Emacs for Coding and Writing
-
 ** i3-wm
-
-great window manager for produtivity
 
 ** tmux
 
-mouse-free tool
-
 ** vimium
-
-help you with chrome browser
 
 ** zsh
 
-beautiful and productive
+** terminator
+
+** fish

@@ -7,6 +7,7 @@
   [[default]]
     [[[child1]]]
       parent = window0
+      profile = default
       type = Terminal
     [[[window0]]]
       parent = ""
@@ -14,12 +15,12 @@
 [plugins]
 [profiles]
   [[default]]
-    background_darkness = 0.9
+    background_darkness = 0.39
     background_type = transparent
     copy_on_selection = True
     cursor_color = "#aaaaaa"
     font = JetBrains Mono 20
-    scroll_on_keystroke = False
+    scroll_on_output = True
     scrollback_lines = 5000
     scrollbar_position = hidden
     show_titlebar = False

@@ -290,21 +290,10 @@ If you need it, just `M-x exec-path-from-shell-initialize`
   ;; `C-c C-p` Copy a file or a directory.
   (use-package neotree
     :ensure t
-    :init
-    ;; NOTE:
-    ;;;; uncomment the following 4 lines, restart emacs and comment them again
-    ;;;; link: https://github.com/domtronn/all-the-icons.el
-    ;; (use-package all-the-icons
-    ;;   :ensure t
-    ;;   :config
-    ;;   (all-the-icons-install-fonts))
     :bind
     (("s-t" . 'neotree-toggle))
     :config
-    ;; (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-    (setq neo-smart-open t)
-    ;; (setq projectile-switch-project-action 'neotree-projectile-action)
-    )
+    (setq neo-smart-open t))
 #+END_SRC
 
 * paredit

@@ -15,6 +15,9 @@ set $mod Mod4
 # is used in the bar {} block below.
 font pango:monospace 12
 
+# popup
+popup_during_fullscreen leave_fullscreen
+
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
@@ -166,7 +169,8 @@ exec_always --no-startup-id feh --bg-scale ~/Pictures/emacs_wallpaper2.png
 
 ## hide window bar
 for_window [class="^.*"] border pixel 1
-new_window 1pixel
+default_border none
+# new_window 1pixel # deprecated
 
 # https://faq.i3wm.org/question/3747/enabling-multimedia-keys.1.html
 # Pulse Audio controls
@@ -184,3 +188,6 @@ exec --no-startup-id pulseaudio --start
 
 # start fcitx
 exec --no-startup-id fcitx
+
+# start terminal
+exec terminator

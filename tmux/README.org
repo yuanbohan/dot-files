@@ -7,9 +7,9 @@
 ** session
 
 - ~tmux ls~                       list sessions
-- ~tmux new -s {{name}}~          start a new named tmux session
+- ~tmux new-session -s {{name}}~  start a new named tmux session
 - ~tmux a -t {{name}}~            attach to a named session
-- ~tmux kill-session -t {{name}}~ kill session:
+- ~tmux kill-session -t {{name}}~ kill session
 
 - ~prefix s~ switch session
 - ~prefix d~ detach session

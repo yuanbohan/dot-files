@@ -66,8 +66,8 @@
   ;; (setq whitespace-style '(face trailing lines tabs big-indent))
 
   ;; transparency
-  (set-frame-parameter (selected-frame) 'alpha '(95 100))
-  (add-to-list 'default-frame-alist '(alpha 95 100))
+  (set-frame-parameter (selected-frame) 'alpha '(85 100))
+  (add-to-list 'default-frame-alist '(alpha 85 100))
 #+END_SRC
 
 * global set key
@@ -560,9 +560,10 @@
           '((sequence "TODO" "DOING"  "|" "DONE" "CANCEL"))))
 
   (use-package org-bullets
-      :ensure t
-      :hook ('org-mode . (lambda () (org-bullets-mode 1)))
-      :after org)
+    :ensure t
+    ;; :hook ('org-mode . (lambda () (org-bullets-mode 1)))
+    :hook ('org-mode . 'org-bullets-mode)
+    :after org)
 
   (use-package htmlize
     :ensure t
@@ -571,6 +572,11 @@
   (use-package ox-gfm
     :ensure t
     :after org)
+
+  (use-package toc-org
+    :ensure t
+    :after org
+    :hook ('org-mode . 'toc-org-mode))
 
   ;; https://github.com/yjwen/org-reveal
   ;;
@@ -588,15 +594,15 @@
 * powerline
 
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package powerline
-  ;;   :ensure t
-  ;;   :config
-  ;;   (powerline-default-theme)
-  ;;   ;; (powerline-center-theme)
-  ;;   ;; (powerline-center-evil-theme)
-  ;;   ;; (powerline-vim-theme)
-  ;;   ;; (powerline-nano-theme)
-  ;;   )
+  (use-package powerline
+    :ensure t
+    :config
+    (powerline-default-theme)
+    ;; (powerline-center-theme)
+    ;; (powerline-center-evil-theme)
+    ;; (powerline-vim-theme)
+    ;; (powerline-nano-theme)
+    )
 #+END_SRC
 
 * abbrev

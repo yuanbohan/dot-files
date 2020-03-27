@@ -54,6 +54,7 @@
   (scroll-bar-mode -1) ; hide scroll bar
   ;; (set-face-attribute 'default nil :height 240) ; default font size
   (set-frame-font "JetBrains Mono 24" nil t) ; https://www.jetbrains.com/lp/mono/
+
   (fset 'yes-or-no-p 'y-or-n-p) ; yes/no -> y/n
   (global-hl-line-mode 1) ; highlight current line
   ;; (set-face-background 'hl-line "darkseagreen") ; highlight current line color
@@ -548,21 +549,29 @@
     :bind
     (("C-c l" . 'org-store-link)
      ("C-c a" . 'org-agenda)
-     ("C-c b" . 'org-switchb))
+     ("C-c b" . 'org-switchb)
+     ("C-c c" . 'org-capture))
     :config
     (require 'ox-md) ; https://orgmode.org/manual/Exporting.html
     ;; https://stackoverflow.com/questions/22065589/org-mode-html-export-with-checkbox
     (setq org-html-checkbox-type 'html)
+    ;; https://orgmode.org/manual/Languages.html
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((python . t)))
     (setq org-log-done 'time)
     (setq org-hide-emphasis-markers t)
     (setq org-image-actual-width nil)
+    (setq org-default-notes-file "~/.emacs.d/notes.org")
     (setq org-todo-keywords
-          '((sequence "TODO" "DOING"  "|" "DONE" "CANCEL"))))
+          '((sequence "TODO" "DOING" "|" "DONE" "CANCEL"))))
 
   (use-package org-bullets
     :ensure t
     ;; :hook ('org-mode . (lambda () (org-bullets-mode 1)))
     :hook ('org-mode . 'org-bullets-mode)
+    ;; :config
+    ;; (setq org-bullets-bullet-list '("⓪" "①" "②" "③" "④" "⑤" "⑥" "⑦" "⑧" "⑨"))
     :after org)
 
   (use-package htmlize
@@ -655,8 +664,6 @@
 #+END_SRC
 
 * Highlights matching parenthesis
-
-make this setting at the end of the configuration
 
 #+BEGIN_SRC emacs-lisp
   ;; https://github.com/tarsius/paren-face

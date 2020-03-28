@@ -161,7 +161,8 @@ bindsym $mod+d exec rofi -show run -lines 5 -opacity "60" -width 10 # rofi
 bindsym $mod+Ctrl+l exec i3lock -i ~/Pictures/linux_wallpaper1.png
 bindsym $mod+Ctrl+g exec chromium --proxy-server="socks://127.0.0.1:1080"
 bindsym $mod+Ctrl+f exec firefox
-bindsym $mod+Ctrl+x exec emacs
+# solve fcitx in Emacs
+bindsym $mod+Ctrl+x exec GTK_IM_MODULE=fcitx GTK_IM_MODULE=fcitx XMODIFIERS=@im=fcitx LANG=zh_CN.UTF-8 LC_CTYPE=zh_CN.UTF-8 emacs
 bindsym $mod+Ctrl+s exec flameshot gui
 
 ## wallpaper

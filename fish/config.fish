@@ -19,11 +19,11 @@ set -x PATH $PATH $HOME/.local/bin /usr/local/go/bin $GOPATH/bin $HOME/.cargo/bi
 eval (python -m virtualfish)
 
 # editor
-set -x EDITOR vim
+set -x EDITOR nvim
 
 # locale
+set -gx LC_CTYPE en_US.UTF-8
 set -gx LANG en_US.UTF-8
-set -gx LC_ALL en_US.UTF-8
 
 # hide greeting
 function fish_greeting
@@ -33,5 +33,5 @@ end
 # https://powerline.readthedocs.io/en/latest/usage/shell-prompts.html#fish-prompt
 # install: `pip install powerline-status`
 # find root path: `pip show powerline-status`
-set fish_function_path $fish_function_path "$HOME/.local/lib/python3.8/site-packages/powerline/bindings/fish"
-powerline-setup
+# set fish_function_path $fish_function_path "$HOME/.local/lib/python3.8/site-packages/powerline/bindings/fish"
+# powerline-setup

@@ -295,7 +295,8 @@
     :bind
     (("s-t" . 'neotree-toggle))
     :config
-    (setq neo-smart-open t))
+    (setq neo-smart-open t)
+    (setq neo-theme 'arrow))
 #+END_SRC
 
 * paredit
@@ -726,4 +727,15 @@
     :config
     (pdf-loader-install))
 
+#+END_SRC
+* fill-column-indicator
+
+#+BEGIN_SRC emacs-lisp
+  (use-package fill-column-indicator
+    :ensure t
+    :hook
+    (('prog-mode . 'fci-mode))
+    :config
+    (require 'fill-column-indicator)
+    (setq fci-rule-column 100))
 #+END_SRC

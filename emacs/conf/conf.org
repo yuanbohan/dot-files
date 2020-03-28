@@ -53,7 +53,8 @@
   (tool-bar-mode -1) ; hide tool bar
   (scroll-bar-mode -1) ; hide scroll bar
   ;; (set-face-attribute 'default nil :height 240) ; default font size
-  (set-frame-font "JetBrains Mono 24" nil t) ; https://www.jetbrains.com/lp/mono/
+  ;; (set-frame-font "JetBrains Mono 24" nil t) ; https://www.jetbrains.com/lp/mono/
+  (set-frame-font "Ubuntu Mono 28" nil t) ; resolve org-mode chinese/english align issue
 
   (fset 'yes-or-no-p 'y-or-n-p) ; yes/no -> y/n
   (global-hl-line-mode 1) ; highlight current line
@@ -603,15 +604,15 @@
 * powerline
 
 #+BEGIN_SRC emacs-lisp
-  (use-package powerline
-    :ensure t
-    :config
-    (powerline-default-theme)
-    ;; (powerline-center-theme)
-    ;; (powerline-center-evil-theme)
-    ;; (powerline-vim-theme)
-    ;; (powerline-nano-theme)
-    )
+  ;; (use-package powerline
+  ;;   :ensure t
+  ;;   :config
+  ;;   (powerline-default-theme)
+  ;;   ;; (powerline-center-theme)
+  ;;   ;; (powerline-center-evil-theme)
+  ;;   ;; (powerline-vim-theme)
+  ;;   ;; (powerline-nano-theme)
+  ;;   )
 #+END_SRC
 
 * abbrev

@@ -358,61 +358,26 @@
 ~lsp-workspace-folder-remove~
 ~lsp-workspace-folder-add~
 
-#+caption: keybindings
-| Keybinding | Description                                                                                                              |
-|------------+--------------------------------------------------------------------------------------------------------------------------|
-| prefix s s | 	Entry point for the server startup.                                                                                  |
-| prefix s r | 	Restart language server                                                                                              |
-| prefix s q | 	Shutdown language server                                                                                             |
-| prefix s d | 	Describes current session                                                                                            |
-| prefix s D | 	Disconnect the buffer from the language server keeping the server running.                                           |
-| prefix = = | 	Ask the server to format this document.                                                                              |
-| prefix = r | 	Ask the server to format the region, or if none is selected, the current line.                                       |
-| prefix F a | 	Add new project root to the list of workspace folders.                                                               |
-| prefix F r | 	Remove project root from the list of workspace folders.                                                              |
-| prefix F b | 	Remove project root from the workspace blacklist.                                                                    |
-| prefix T l | 	Toggle code-lens overlays.                                                                                           |
-| prefix T L | 	Toggle client-server protocol logging.                                                                               |
-| prefix T h | 	Toggle symbol highlighting.                                                                                          |
-| prefix T S | 	Toggle minor mode for showing information for current line in sideline. (requires lsp-ui)                            |
-| prefix T d | 	Toggle minor mode for showing hover information in child frame. (requires lsp-ui)                                    |
-| prefix T s | 	Toggle signature auto activate.                                                                                      |
-| prefix T f | 	Toggle on type formatting.                                                                                           |
-| prefix T T | 	Toggle global minor mode for synchronizing lsp-mode workspace folders and treemacs projects. (requires lsp-treemacs) |
-| prefix g g | 	Find definitions of the symbol under point.                                                                          |
-| prefix g r | 	Find references of the symbol under point.                                                                           |
-| prefix g i | 	Find implementations of the symbol under point.                                                                      |
-| prefix g t | 	Find type definitions of the symbol under point.                                                                     |
-| prefix g d | 	Find declarations of the symbol under point.                                                                         |
-| prefix g h | 	Show the incoming call hierarchy for the symbol at point. (requires lsp-treemacs)                                    |
-| prefix g a | 	Find all meaningful symbols that match pattern.                                                                      |
-| prefix h h | 	Display the type signature and documentation of the thing at                                                         |
-| prefix h s | 	Activate signature help.                                                                                             |
-| prefix h g | 	Trigger display hover information popup and hide it on next typing.                                                  |
-| prefix r r | 	Rename the symbol (and all references to it).                                                                        |
-| prefix r o | 	Perform the source.organizeImports code action, if available.                                                        |
-| prefix a a | 	Execute code action action.                                                                                          |
-| prefix a l | 	Click lsp lens using ‘avy’ package.                                                                                  |
-| prefix a h | 	Highlight symbol at point.                                                                                           |
-| prefix G g | 	Peek definitions to the identifier at point. (requires lsp-ui)                                                       |
-| prefix G r | 	Peek references to the identifier at point. (requires lsp-ui)                                                        |
-| prefix G i | 	Peek implementation locations of the symbol at point. (requires lsp-ui)                                              |
-| prefix G s | 	Peek symbols in the worskpace. (requires lsp-ui)                                                                     |
 
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :ensure t
     :hook
-    (('lsp-mode    . 'lsp-enable-which-key-integration)
-     ('rust-mode   . 'lsp)
-     ;; ('python-mode . 'lsp) ;; elpy is better than pyls
-     )
+    (('lsp-mode  . 'lsp-enable-which-key-integration)
+     ('rust-mode . 'lsp))
     :init
     (setq lsp-keymap-prefix "s-p"))
 
+  ;; https://github.com/emacs-lsp/lsp-ui
+  ;;
+  ;; xref-find-{definitions,references} (bound to M-. M-?
   (use-package lsp-ui
     :ensure t
-    :after lsp-mode)
+    :after lsp-mode
+    :init
+    (setq lsp-ui-doc-enable nil)
+    :bind
+    (("s-p d" . 'lsp-ui-doc-show)))
 
   (use-package company-lsp
     :ensure t

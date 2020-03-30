@@ -1,10 +1,15 @@
-* Emacs Configuration
+#+OPTIONS: toc:nil date:nil timestamp:nil
+#+TITLE: Emacs Configuration
+#+AUTHOR: Yuanbo Han
+#+DATE:
+#+EMAIL: yuanbo.han@gmail.com
 
 move ~dot-emacs~ to your home directory, rename to ~.emacs~, and restart your emacs
 
 - I use GNU Emacs
 - make sure you can connect to melpa
 - comment package you don't need in ~conf.org~ to speed up
+- comment programming packages, some of them will fail emacs if you haven't installed on your OS
 
 NOTE:
 
@@ -16,10 +21,10 @@ NOTE:
 - [X] Rust
 - [X] Clojure
 - [X] Python
-- [X] Haskell
+- [X] Elixir
+- [ ] Haskell
 - [ ] Golang
-- [X] \LaTeX
-
+- [ ] \LaTeX
 
 ** Reference
 

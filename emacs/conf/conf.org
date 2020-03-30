@@ -1,4 +1,4 @@
-#+STARTUP: overview
+
 #+PROPERTY: header-args :comments yes :results silent
 
 * use-package
@@ -363,10 +363,13 @@
   (use-package lsp-mode
     :ensure t
     :hook
-    (('lsp-mode  . 'lsp-enable-which-key-integration)
-     ('rust-mode . 'lsp))
+    (('lsp-mode    . 'lsp-enable-which-key-integration)
+     ('rust-mode   . 'lsp)
+     ('elixir-mode . 'lsp))
     :init
-    (setq lsp-keymap-prefix "s-p"))
+    (setq lsp-keymap-prefix "s-p")
+    ;; https://elixirforum.com/t/emacs-elixir-setup-configuration-wiki/19196
+    (add-to-list 'exec-path "/home/bobo/workspace/github.com/elixir-ls/release"))
 
   ;; https://github.com/emacs-lsp/lsp-ui
   ;;
@@ -477,6 +480,17 @@
     (setq rust-format-on-save t))
 #+END_SRC
 
+* elixir
+
+#+BEGIN_SRC emacs-lisp
+  (use-package elixir-mode
+    :ensure t)
+
+  (use-package elixir-yasnippets
+    :ensure t
+    :after elixir-mode)
+#+END_SRC
+
 * company
 
 #+BEGIN_SRC emacs-lisp
@@ -494,10 +508,11 @@
 * expand region
 
 #+BEGIN_SRC emacs-lisp
+  ;; C-- C-= : contract the region
   (use-package expand-region
     :ensure t
     :bind
-    ("C-=". 'er/expand-region))
+    ("C-=" . 'er/expand-region))
 #+END_SRC
 
 * rest client

@@ -351,13 +351,46 @@
   :hook ('prog-mode . 'rainbow-delimiters-mode))
 #+END_SRC
 
-* language server protocol
+* lsp - language server protocol
 
-[[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
+- [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
+- [[https://elixirforum.com/t/emacs-elixir-setup-configuration-wiki/19196][elixir lsp setup]]
+- [[https://github.com/rust-lang/rls][rust languague server]]
 
-~lsp-workspace-folder-remove~
-~lsp-workspace-folder-add~
+** emacs lsp-mode setup
 
+use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-ivy, fly-check~
+
+** rust languague server setup
+
+*** install rust
+
+*** install components
+
+~rustup component add rls rust-analysis rust-src~
+
+*** config emacs
+
+- install ~rust-mode~
+- hook ~('rust-mode . 'lsp)~
+
+** elixir languague server setup
+
+*** install elixir
+
+*** compile euixir-ls
+
+- ~git clone git@github.com:JakeBecker/elixir-ls.git~
+- ~cd elixir-ls~
+- ~mix deps.get~
+- ~mix elixir_ls.release~ // This will create a release/language_server.sh
+
+*** config emacs
+
+- install ~elixir-mode(required)~ and ~exunit (optional)~
+- config lsp-mode
+  - hook ~('elixir-mode . 'lsp)~
+  - exec-path ~(add-to-list 'exec-path "/path/to/elixir-ls/release")~
 
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
@@ -368,7 +401,6 @@
      ('elixir-mode . 'lsp))
     :init
     (setq lsp-keymap-prefix "s-p")
-    ;; https://elixirforum.com/t/emacs-elixir-setup-configuration-wiki/19196
     (add-to-list 'exec-path "/home/bobo/workspace/github.com/elixir-ls/release"))
 
   ;; https://github.com/emacs-lsp/lsp-ui
@@ -483,12 +515,20 @@
 * elixir
 
 #+BEGIN_SRC emacs-lisp
-  (use-package elixir-mode
-    :ensure t)
+  (defun elixir-mode-before-save-hook ()
+    (when (eq major-mode 'elixir-mode)
+      (lsp-format-buffer)))
 
-  (use-package elixir-yasnippets
+  (use-package elixir-mode
     :ensure t
-    :after elixir-mode)
+    :hook ('before-save . #'elixir-mode-before-save-hook))
+
+  (use-package exunit
+    :ensure t
+    :after elixir-mode
+    :bind (("C-c t a" . 'exunit-verify-all)
+           ("C-c t t" . 'exunit-verify)
+           ("C-c t s" . 'exunit-verify-single)))
 #+END_SRC
 
 * company

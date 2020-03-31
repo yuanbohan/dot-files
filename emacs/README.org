@@ -18,21 +18,25 @@ NOTE:
 
 ** major prod mode
 
-- [X] Rust
-- [X] Clojure
-- [X] Python
-- [X] Elixir
+- [X] Rust - lsp
+- [X] Clojure - cider
+- [X] Python - elpy
+- [X] Elixir - lsp
 - [ ] Haskell
 - [ ] Golang
 - [ ] \LaTeX
+- [ ] Java
 
 ** Reference
 
 *** packages
 
-- [[https://magit.vc][Magit]] MUST use
-- [[https://orgmode.org][Org-mode]] which you SHOULD use
 - [[https://github.com/jwiegley/use-package][use-package]] which makes configuration clean
+- [[https://magit.vc][Magit]] MUST use
+- [[https://orgmode.org][Org-mode]] which you SHOULD use for doc, note, plan
+- [[https://github.com/joaotavora/yasnippet][yasnippet]] which you SHOULD use for coding
+- [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] which you SHOULD consider for better coding experience
+
 
 *** blogs or videos
 
@@ -43,3 +47,4 @@ NOTE:
 - [[https://github.com/xtang][xtang]], I encounter Emacs
 - [[https://github.com/sunng87][sunng87]], I am doing something interesting with Rust
 - [[https://bearychat.com][BearyChat]], I encounter Clojure, Erlang
+

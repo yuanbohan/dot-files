@@ -1,5 +1,12 @@
-
 #+PROPERTY: header-args :comments yes :results silent
+
+* speed init
+
+[[https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/][reddit]]
+
+#+BEGIN_SRC emacs-lisp
+  (setq gc-cons-threshold 100000000)
+#+END_SRC
 
 * use-package
 
@@ -14,6 +21,21 @@
     :ensure t
     :config
     (require 'bind-key))
+#+END_SRC
+
+* benchmark-init
+
+find which makes init slow
+~(emacs-init-time)~ can get the init time
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package benchmark-init
+  ;;   :ensure t
+  ;;   :init
+  ;;   (benchmark-init/activate)
+  ;;   :config
+  ;;   ;; To disable collection of benchmark data after init is done.
+  ;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 #+END_SRC
 
 * diminish
@@ -45,7 +67,7 @@
 * UI related
 
 #+BEGIN_SRC emacs-lisp
-  (setq inhibit-startup-screen t) ; hide the welcome screen
+  ;; (setq inhibit-startup-screen t) ; hide the welcome screen
   (setq initial-major-mode 'text-mode)
   (setq column-number-mode t)
   (menu-bar-mode -1) ; hide menu bar
@@ -157,6 +179,7 @@
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
     :ensure t
+    :defer 5
     :config
     (yas-reload-all)
     (setq yas-wrap-around-region t)
@@ -395,11 +418,12 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :ensure t
+    :defer 5
     :hook
     (('lsp-mode    . 'lsp-enable-which-key-integration)
      ('rust-mode   . 'lsp)
      ('elixir-mode . 'lsp))
-    :init
+    :config
     (setq lsp-keymap-prefix "s-p")
     (add-to-list 'exec-path "/home/bobo/workspace/github.com/elixir-ls/release"))
 
@@ -409,7 +433,7 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
   (use-package lsp-ui
     :ensure t
     :after lsp-mode
-    :init
+    :config
     (setq lsp-ui-doc-enable nil)
     :bind
     (("s-p d" . 'lsp-ui-doc-show)))
@@ -432,25 +456,27 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 #+BEGIN_SRC emacs-lisp
   (use-package clojure-mode
     :ensure t
-    :hook (('clojure-mode . 'eldoc-mode)))
-
-  ;; compojure indentation
-  (define-clojure-indent
-    (defroutes 'defun)
-    (GET 2)
-    (POST 2)
-    (PUT 2)
-    (DELETE 2)
-    (HEAD 2)
-    (ANY 2)
-    (OPTIONS 2)
-    (PATCH 2)
-    (rfn 2)
-    (let-routes 1)
-    (context 2))
+    :defer 5
+    :hook (('clojure-mode . 'eldoc-mode))
+    :config
+    ;; compojure indentation
+    (define-clojure-indent
+      (defroutes 'defun)
+      (GET 2)
+      (POST 2)
+      (PUT 2)
+      (DELETE 2)
+      (HEAD 2)
+      (ANY 2)
+      (OPTIONS 2)
+      (PATCH 2)
+      (rfn 2)
+      (let-routes 1)
+      (context 2)))
 
   (use-package cider
     :ensure t
+    :after clojure-moed
     :config
     ;; go right to the REPL buffer when it's finished connecting
     (setq cider-repl-pop-to-buffer-on-connect t)
@@ -492,7 +518,7 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 
   (use-package elpy
     :ensure t
-    :defer t
+    :defer 5
     ;; M-<right> / M-<left> move block right/left
     ;; M-<up>    / M-<down> move block up/down
     :bind (("C-c M-f" . 'elpy-format-code)
@@ -508,6 +534,7 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
     :ensure t
+    :defer 5
     :config
     (setq rust-format-on-save t))
 #+END_SRC
@@ -521,6 +548,7 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 
   (use-package elixir-mode
     :ensure t
+    :defer 5
     :hook ('before-save . #'elixir-mode-before-save-hook))
 
   (use-package exunit
@@ -551,6 +579,7 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
   ;; C-- C-= : contract the region
   (use-package expand-region
     :ensure t
+    :defer 5
     :bind
     ("C-=" . 'er/expand-region))
 #+END_SRC
@@ -560,6 +589,7 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 #+BEGIN_SRC emacs-lisp
   (use-package restclient
     :ensure t
+    :defer 5
     :mode "\\.http\\'")
 #+END_SRC
 
@@ -568,6 +598,7 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :ensure t
+    :defer 5
     :bind
     (("C-c l" . 'org-store-link)
      ("C-c a" . 'org-agenda)
@@ -590,6 +621,7 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 
   (use-package org-bullets
     :ensure t
+    :defer 5
     ;; :hook ('org-mode . (lambda () (org-bullets-mode 1)))
     :hook ('org-mode . 'org-bullets-mode)
     ;; :config
@@ -598,14 +630,17 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 
   (use-package htmlize
     :ensure t
+    :defer 5
     :after org)
 
   (use-package ox-gfm
     :ensure t
+    :defer 5
     :after org)
 
   (use-package toc-org
     :ensure t
+    :defer 5
     :after org
     :hook ('org-mode . 'toc-org-mode))
 
@@ -615,6 +650,7 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
   ;; Available transitions are: default|cube|page|concave|zoom|linear|fade|none.
   (use-package ox-reveal
     :ensure t
+    :defer 5
     :after org
     :config
     (setq org-reveal-mathjax t)
@@ -664,16 +700,20 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 * misc packages
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode
-    :ensure t)
+    :ensure t
+    :defer 5)
 
   (use-package toml-mode
-    :ensure t)
+    :ensure t
+    :defer 5)
 
   (use-package markdown-mode
-    :ensure t)
+    :ensure t
+    :defer 5)
 
   (use-package json-mode
-    :ensure t)
+    :ensure t
+    :defer 5)
 #+END_SRC
 * avy
 [[https://github.com/abo-abo/avy][avy]]
@@ -740,10 +780,12 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 
 #+BEGIN_SRC emacs-lisp
   (use-package tablist
-    :ensure t)
+    :ensure t
+    :defer 5)
 
   (use-package pdf-tools
     :ensure t
+    :defer 5
     :config
     (pdf-loader-install))
 

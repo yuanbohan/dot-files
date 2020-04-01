@@ -19,15 +19,19 @@ set -x PATH $PATH $HOME/.local/bin /usr/local/go/bin $GOPATH/bin $HOME/.cargo/bi
 eval (python -m virtualfish)
 
 # editor
-set -x EDITOR nvim
+set -x EDITOR 'emacsclient -t'
 
 # locale
-set -gx LC_CTYPE en_US.UTF-8
 set -gx LANG en_US.UTF-8
+set -gx LC_ALL en_US.UTF-8
 
 # hide greeting
 function fish_greeting
 end
+
+# alias
+alias g='git'
+alias ec='emacsclient -t'
 
 # powerline
 # https://powerline.readthedocs.io/en/latest/usage/shell-prompts.html#fish-prompt

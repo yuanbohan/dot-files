@@ -76,7 +76,7 @@ find which makes init slow
   (scroll-bar-mode -1) ; hide scroll bar
   ;; (set-face-attribute 'default nil :height 240) ; default font size
   ;; (set-frame-font "JetBrains Mono 24" nil t) ; https://www.jetbrains.com/lp/mono/
-  (set-frame-font "Ubuntu Mono 28" nil t) ; resolve org-mode chinese/english align issue
+  (set-frame-font "Ubuntu Mono 20" nil t) ; resolve org-mode chinese/english align issue
 
   (fset 'yes-or-no-p 'y-or-n-p) ; yes/no -> y/n
   (global-hl-line-mode 1) ; highlight current line
@@ -90,40 +90,37 @@ find which makes init slow
   ;; (setq whitespace-style '(face trailing lines tabs big-indent))
 
   ;; transparency
-  (set-frame-parameter (selected-frame) 'alpha '(85 100))
-  (add-to-list 'default-frame-alist '(alpha 85 100))
+  ;; (set-frame-parameter (selected-frame) 'alpha '(85 100))
+  ;; (add-to-list 'default-frame-alist '(alpha 85 100))
 #+END_SRC
 
-* global set key
+* smart-line
+
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "s-g") 'goto-line)
-
-  ;; manage window
-  (global-set-key (kbd "C-M--") 'shrink-window-horizontally)
-  (global-set-key (kbd "C-M-=") 'enlarge-window-horizontally)
-  (global-set-key (kbd "C-s--") 'shrink-window)
-  (global-set-key (kbd "C-s-=") 'enlarge-window)
-
-  ;; 'window-swap-states' swaps the states of two live windows.
-
-  ;; hide show code block
-  ;; (add-hook 'prog-mode-hook (lambda () (hs-minor-mode t)))
-  ;; (global-set-key (kbd "C-c TAB") 'hs-toggle-hiding)
-  ;; (global-set-key (kbd "C-c C-t") 'hs-hide-all)
-  ;; (global-set-key (kbd "C-c C-s") 'hs-show-all)
-#+END_SRC
-
-* duplicate line
-#+BEGIN_SRC emacs-lisp
-  (defun duplicate-line()
+  (defun smart-open-line ()
+    "Insert an empty line after the current line. Position the cursor at its beginning, according to the current mode."
     (interactive)
-    (move-beginning-of-line 1)
-    (kill-line)
-    (yank)
-    (open-line 1)
-    (next-line 1)
-    (yank))
-  (global-set-key (kbd "C-c C-d") 'duplicate-line)
+    (move-end-of-line nil)
+    (newline-and-indent))
+
+  (defun smart-open-line-above ()
+    "Insert an empty line above the current line. Position the cursor at it's beginning, according to the current mode."
+    (interactive)
+    (move-beginning-of-line nil)
+    (newline-and-indent)
+    (forward-line -1)
+    (indent-according-to-mode))
+
+  (global-set-key (kbd "s-<return>") 'smart-open-line)
+  (global-set-key (kbd "s-S-<return>") 'smart-open-line-above)
+
+
+  (defun move-below-line-up ()
+    "Join the current line with the next line."
+    (interactive)
+    (delete-indentation 1))
+
+  (global-set-key (kbd "s-j") 'move-below-line-up)
 #+END_SRC
 
 * comment code
@@ -419,35 +416,42 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
   (use-package lsp-mode
     :ensure t
     :defer 5
+    ;; :init (setq lsp-keymap-prefix "s-g")
     :hook
-    (('lsp-mode    . 'lsp-enable-which-key-integration)
-     ('rust-mode   . 'lsp)
-     ('elixir-mode . 'lsp))
-    :config
-    (setq lsp-keymap-prefix "s-p")
-    (add-to-list 'exec-path "/home/bobo/workspace/github.com/elixir-ls/release"))
+    (('rust-mode   . 'lsp)
+     ('elixir-mode . 'lsp)
+    ;; ('lsp-mode    . 'lsp-enable-which-key-integration)
+     )
+    ;; :config
+    ;; (setq lsp-keymap-prefix "s-g")
+    ;; :bind
+    ;; ("s-g d" . 'lsp-ui-doc-show)
+    )
 
   ;; https://github.com/emacs-lsp/lsp-ui
   ;;
   ;; xref-find-{definitions,references} (bound to M-. M-?
   (use-package lsp-ui
     :ensure t
+    :defer 5
     :after lsp-mode
     :config
     (setq lsp-ui-doc-enable nil)
-    :bind
-    (("s-p d" . 'lsp-ui-doc-show)))
+    (setq lsp-ui-doc-delay 5000))
 
   (use-package company-lsp
     :ensure t
+    :defer 5
     :after lsp-mode)
 
   (use-package flycheck
     :ensure t
+    :defer 5
     :after lsp-mode)
 
   (use-package lsp-ivy
     :ensure t
+    :defer 5
     :after lsp-mode)
 #+END_SRC
 
@@ -518,7 +522,6 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 
   (use-package elpy
     :ensure t
-    :defer 5
     ;; M-<right> / M-<left> move block right/left
     ;; M-<up>    / M-<down> move block up/down
     :bind (("C-c M-f" . 'elpy-format-code)
@@ -654,8 +657,9 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
     :after org
     :config
     (setq org-reveal-mathjax t)
-    ;; (setq org-reveal-root "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/")
-    (setq org-reveal-root "/home/yuanbo/workspace/github.com/reveal.js"))
+    (setq org-reveal-root "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/")
+    ;; (setq org-reveal-root "/home/yuanbo/workspace/github.com/reveal.js")
+    )
 #+END_SRC
 
 * powerline
@@ -799,5 +803,8 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
     (('prog-mode . 'fci-mode))
     :config
     (require 'fill-column-indicator)
-    (setq fci-rule-column 100))
+    (setq fci-rule-column 80))
+
+  (global-set-key (kbd "C-c q") 'auto-fill-mode)
+  ;; C-x f 'set-fill-column
 #+END_SRC

@@ -257,6 +257,7 @@ find which makes init slow
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
     :ensure t
+    :defer 5
     :bind
     (("C-x C-v" . 'mc/edit-lines)
      ("C->" . 'mc/mark-next-like-this)
@@ -522,6 +523,7 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 
   (use-package elpy
     :ensure t
+    :defer 5
     ;; M-<right> / M-<left> move block right/left
     ;; M-<up>    / M-<down> move block up/down
     :bind (("C-c M-f" . 'elpy-format-code)
@@ -856,3 +858,10 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 - ~C-x e~
 - ~name-last-kbd-macro~ and ~m-x the-macro-name~
 - ~apply-macro-to-region-lines~
+
+* mark ring
+
+| C-Space C-Space | to push current position into mark ring                            |
+| C-u C-Space     | Move cursor to previous marked position in current buffer          |
+| C-x C-Space     | Move cursor to previous marked position (may be in another buffer) |
+| C-x C-x         | Move cursor to the other end of selection                          |

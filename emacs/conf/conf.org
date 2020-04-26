@@ -84,10 +84,10 @@ find which makes init slow
 
   ;;;; trailing whitespace
   ;; https://stackoverflow.com/questions/34531831/highlighting-trailing-whitespace-in-emacs-without-changing-character
-  (setq-default show-trailing-whitespace t)
+  ;; (setq-default show-trailing-whitespace t)
+
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Useless-Whitespace.html
   ;; (global-whitespace-mode)
-  ;; (setq whitespace-style '(face trailing lines tabs big-indent))
 
   ;; transparency
   ;; (set-frame-parameter (selected-frame) 'alpha '(85 100))
@@ -135,7 +135,7 @@ find which makes init slow
         (setq beg (line-beginning-position) end (line-end-position)))
       (comment-or-uncomment-region beg end)))
 
-  (global-set-key (kbd "C-;") 'comment-region-or-line)
+  (global-set-key (kbd "s-/") 'comment-region-or-line)
 #+END_SRC
 
 * beacon
@@ -589,11 +589,17 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 
 * rest client
 
+| C-c C-c | runs the query under the cursor                |
+| C-c C-r | same but doesn't do anything with the response |
+| C-c C-v | same but doesn't switch focus to other window  |
+| TAB     | hide/show current request body                 |
+| C-c C-a | show all collapsed regions                     |
+
 #+BEGIN_SRC emacs-lisp
   (use-package restclient
     :ensure t
     :defer 5
-    :mode "\\.http\\'")
+    :mode ("\\.http\\'" . 'restclient-mode))
 #+END_SRC
 
 * org
@@ -678,14 +684,21 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 
 * abbrev
 
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Defining-Abbrevs.html][define abbrevs]]
+[[https://www.emacswiki.org/emacs/AbbrevMode][abbrev mode]]
+[[https://wilkesley.org/~ian/xah/emacs/emacs_abbrev_mode.html][abbrev mode tutorial]]
+
+| C-x a i g                                             | add-inverse-global                                           |
+| C-x a i l                                             | add-inverse-local                                            |
+| C-x a g                                               | add-global-abbrev                                            |
+| C-u 3 C-x a g                                         | how many words before point should be taken as the expansion |
+| C-x a l                                               | add-mode-abbrev                                              |
+| M-x define-global-abbrev <RET> abbrev <RET> exp <RET> | Define abbrev as an abbrev expanding into exp.               |
+
 #+BEGIN_SRC emacs-lisp
-  ;; https://www.emacswiki.org/emacs/AbbrevMode
-  ;; C-x a i g add-inverse-global
-  ;; C-x a i l add-inverse-local
-  ;; (setq-default abbrev-mode t)
-  ;; (setq abbrev-file-name             ;; tell emacs where to read abbrev
-  ;;       "~/.emacs.d/abbrev_defs")    ;; definitions from...
-  ;; (setq save-abbrevs 'silent)        ;; save abbrevs when files are saved
+  (setq-default abbrev-mode t)
+  (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
+  (setq save-abbrevs 'silent)
 #+END_SRC
 
 * undo tree
@@ -750,7 +763,8 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
     :ensure t
     :bind (("C-c C-SPC". 'whitespace-cleanup))
     :hook
-    (('prog-mode . 'whitespace-cleanup-mode)))
+    (('prog-mode . 'whitespace-cleanup-mode)
+     ('before-save . 'whitespace-cleanup)))
 #+END_SRC
 * pdf-tools
 
@@ -803,8 +817,42 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
     (('prog-mode . 'fci-mode))
     :config
     (require 'fill-column-indicator)
-    (setq fci-rule-column 80))
+    (setq fci-rule-column 100))
 
-  (global-set-key (kbd "C-c q") 'auto-fill-mode)
   ;; C-x f 'set-fill-column
+  (global-set-key (kbd "C-c q") 'auto-fill-mode)
 #+END_SRC
+* ispell
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-$")   'ispell-word)
+  (global-set-key (kbd "C-M-i") 'ispell-complete-word)
+#+END_SRC
+* replace
+
+** unconditional replace
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-r") 'replace-string)
+#+END_SRC
+
+** query replace
+
+~M-%~
+
+| y or space | Replace text and find the next occurrence      |
+| n or del   | Leave text as is and find the next occurrence  |
+| .          | Replace text then stop looking for occurrences |
+| q or RET   | exit                                           |
+| !          | Replace all occurrences without asking         |
+| ^          | Return the cursor to previously replaced text  |
+| u          | to undo previous replacement                   |
+| U          | to undo all replacements                       |
+| E          | to edit the replacement string                 |
+* macros
+
+- ~C-x (~
+- ~C-x )~
+- ~C-x e~
+- ~name-last-kbd-macro~ and ~m-x the-macro-name~
+- ~apply-macro-to-region-lines~

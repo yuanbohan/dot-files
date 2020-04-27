@@ -209,17 +209,19 @@ find which makes init slow
     :ensure t
     :config
     (projectile-mode +1)
+    (setq projectile-completion-system 'ivy)
+    (setq projectile-dynamic-mode-line nil)
     :bind-keymap
-    ("C-c p"   . projectile-command-map))
+    ("s-p" . projectile-command-map))
 
-  (use-package helm-projectile
-      :ensure t
-      :config
-      (projectile-global-mode 1)
-      (helm-projectile-on)
-      ;; (setq projectile-completion-system 'helm)
-      (setq projectile-switch-project-action 'helm-projectile)
-      )
+  ;; (use-package helm-projectile
+  ;;   :ensure t
+  ;;   :config
+  ;;   (projectile-global-mode 1)
+  ;;   (helm-projectile-on)
+  ;;   ;; (setq projectile-completion-system 'helm)
+  ;;   (setq projectile-switch-project-action 'helm-projectile)
+  ;;   )
 #+END_SRC
 
 * counsel
@@ -266,6 +268,15 @@ find which makes init slow
 #+END_SRC
 
 * magit & forge
+
+** cherry pick [fn:1] [fn:2]
+
+- ~M-x magit-status~ to enter open a Magit buffer
+- ~b v~ to list current branches
+- select branch to receive patch, RET to checkout
+- ~l rl~ to list patches from this branch to the branch with the cherries (or l rL, long diff)
+- select the patch to cherry-pick
+- ~A~ to bring the patch onto the current branch
 
 #+BEGIN_SRC emacs-lisp
   (use-package magit
@@ -372,7 +383,7 @@ find which makes init slow
   :hook ('prog-mode . 'rainbow-delimiters-mode))
 #+END_SRC
 
-* lsp - language server protocol
+* language server protocol
 
 - [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 - [[https://elixirforum.com/t/emacs-elixir-setup-configuration-wiki/19196][elixir lsp setup]]
@@ -413,6 +424,14 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
   - hook ~('elixir-mode . 'lsp)~
   - exec-path ~(add-to-list 'exec-path "/path/to/elixir-ls/release")~
 
+** python language server setup
+
+- use pipenv to manage virtualenv and dependencies
+- activate the env, and ~pip install 'python-language-server[all]'~
+- in Emacs, ~M-x pyvenv-activate~
+
+** config
+
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :ensure t
@@ -421,17 +440,15 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
     :hook
     (('rust-mode   . 'lsp)
      ('elixir-mode . 'lsp)
-    ;; ('lsp-mode    . 'lsp-enable-which-key-integration)
-     )
-    ;; :config
-    ;; (setq lsp-keymap-prefix "s-g")
-    ;; :bind
-    ;; ("s-g d" . 'lsp-ui-doc-show)
-    )
+     ('python-mode . 'lsp))
+    :bind-keymap ("s-l" . 'lsp-command-map)
+    :bind (:map lsp-command-map
+                ("d s" . 'lsp-ui-doc-show)
+                ("d h" . 'lsp-ui-doc-hide)))
 
   ;; https://github.com/emacs-lsp/lsp-ui
   ;;
-  ;; xref-find-{definitions,references} (bound to M-. M-?
+  ;; xref-find-{definitions,references} (bound to m-. m-?
   (use-package lsp-ui
     :ensure t
     :defer 5
@@ -516,22 +533,24 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 
 * python
 
-#+BEGIN_SRC emacs-lisp
-  (defun python-mode-before-save-hook ()
-    (when (eq major-mode 'python-mode)
-      (elpy-format-code)))
+use lsp instead
 
-  (use-package elpy
-    :ensure t
-    :defer 5
-    ;; M-<right> / M-<left> move block right/left
-    ;; M-<up>    / M-<down> move block up/down
-    :bind (("C-c M-f" . 'elpy-format-code)
-           ("C-M-n"   . 'elpy-nav-forward-block)
-           ("C-M-p"   . 'elpy-nav-backward-block))
-    :config (setq elpy-rpc-virtualenv-path 'current)
-    :hook ('before-save . #'python-mode-before-save-hook)
-    :init (advice-add 'python-mode :before 'elpy-enable))
+#+BEGIN_SRC emacs-lisp
+  ;; (defun python-mode-before-save-hook ()
+  ;;   (when (eq major-mode 'python-mode)
+  ;;     (elpy-format-code)))
+
+  ;; (use-package elpy
+  ;;   :ensure t
+  ;;   :defer 5
+  ;;   ;; M-<right> / M-<left> move block right/left
+  ;;   ;; M-<up>    / M-<down> move block up/down
+  ;;   :bind (("C-c M-f" . 'elpy-format-code)
+  ;;          ("C-M-n"   . 'elpy-nav-forward-block)
+  ;;          ("C-M-p"   . 'elpy-nav-backward-block))
+  ;;   :config (setq elpy-rpc-virtualenv-path 'current)
+  ;;   :hook ('before-save . #'python-mode-before-save-hook)
+  ;;   :init (advice-add 'python-mode :before 'elpy-enable))
 #+END_SRC
 
 * rust
@@ -810,6 +829,16 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
     (pdf-loader-install))
 
 #+END_SRC
+* google this
+
+#+BEGIN_SRC emacs-lisp
+  (use-package google-this
+    :ensure t
+    :defer 5)
+
+  (global-set-key (kbd "C-x /") 'google-this-mode-submap)
+#+END_SRC
+
 * fill-column-indicator
 
 #+BEGIN_SRC emacs-lisp
@@ -819,14 +848,18 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
     (('prog-mode . 'fci-mode))
     :config
     (require 'fill-column-indicator)
-    (setq fci-rule-column 100))
+    (setq fci-rule-column 80))
 
   ;; C-x f 'set-fill-column
   (global-set-key (kbd "C-c q") 'auto-fill-mode)
 #+END_SRC
 * ispell
 
+| i | in ispell proc, insert to private dictionary |
+
+
 #+BEGIN_SRC emacs-lisp
+  (setq ispell-personal-dictionary "~/.emacs.d/ispell_dicts")
   (global-set-key (kbd "M-$")   'ispell-word)
   (global-set-key (kbd "C-M-i") 'ispell-complete-word)
 #+END_SRC
@@ -865,3 +898,8 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 | C-u C-Space     | Move cursor to previous marked position in current buffer          |
 | C-x C-Space     | Move cursor to previous marked position (may be in another buffer) |
 | C-x C-x         | Move cursor to the other end of selection                          |
+
+* Footnotes
+
+[fn:1] [[https://emacs.stackexchange.com/questions/10611/how-to-easily-cherry-pick-with-magit][cherry pick with magit]]
+[fn:2] [[https://www.emacswiki.org/emacs/MagitCherryPick][magit cherry pick]]

@@ -224,8 +224,26 @@ find which makes init slow
   ;;   )
 #+END_SRC
 
-* counsel
-  [[https://oremacs.com/swiper][counsel]]
+* ivy
+
+- [[https://oremacs.com/swiper][ivy user manual]]
+- [[https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html][ivy demo]]
+
+| Key        | Command                 | Description                                    |
+|------------+-------------------------+------------------------------------------------|
+| M-n        | ivy-next-line           | Next line                                      |
+| M-p        | ivy-previous-line       | Previous line                                  |
+| M-<        | ivy-beginning-of-buffer | Beginning of the Ivy minibuffer                |
+| M->        | ivy-end-of-buffer       | End of the Ivy minibuffer                      |
+| C-v        | ivy-scroll-up-command   | Page up by one Ivy buffer size                 |
+| M-v        | ivy-scroll-down-command | Page down by one Ivy buffer size               |
+| C-m or RET | ivy-done                | Calls the default action                       |
+| ~C-M-m~      | ivy-call                | Calls the default action, keeps Ivy open       |
+| ~M-o~        | ivy-dispatching-done    | Displays the available actions                 |
+| ~C-M-o~      | ivy-dispacthing-call    | Displays available actions, keeps Ivy open     |
+| C-'        | ivy-avy                 | Uses Avy to select candidates                  |
+| TAB        | ivy-partial-or-done     | Tab completion, repeated presses may call done |
+|            | ivy-resume              | Restart Ivy before last action                 |
 
 #+BEGIN_SRC emacs-lisp
   (use-package counsel
@@ -839,15 +857,17 @@ use lsp instead
   (global-set-key (kbd "C-x /") 'google-this-mode-submap)
 #+END_SRC
 
-* fill-column-indicator
+* fci
+
+fill-column-indicator
 
 #+BEGIN_SRC emacs-lisp
   (use-package fill-column-indicator
     :ensure t
-    :hook
-    (('prog-mode . 'fci-mode))
+    ;; :hook
+    ;; (('prog-mode . 'fci-mode))
     :config
-    (require 'fill-column-indicator)
+    ;; (require 'fill-column-indicator)
     (setq fci-rule-column 80))
 
   ;; C-x f 'set-fill-column

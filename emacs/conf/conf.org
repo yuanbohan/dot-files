@@ -710,6 +710,60 @@ use lsp instead
 
 * org
 
+** normal
+|--------------+-----------------------------------------------------------------------------------------------------|
+| C-u C-c C-c  | make plain list to checkbox list. cursor at the beginning will make the whole list to checkbox list |
+| M-S-RET      | will add a new item with a checkbox                                                                 |
+|--------------+-----------------------------------------------------------------------------------------------------|
+| C-c C-x p    | Set a property. This prompts for a property name and a value                                        |
+|--------------+-----------------------------------------------------------------------------------------------------|
+| C-c C-x f    | add The footnote                                                                                    |
+| C-c C-c      | Jump between definition and reference                                                               |
+|--------------+-----------------------------------------------------------------------------------------------------|
+| M-up/down    | move up/down current subtree                                                                        |
+| M-left/right | Promote/demote current subtree                                                                      |
+|--------------+-----------------------------------------------------------------------------------------------------|
+| C-c /        | sparse tree                                                                                         |
+|--------------+-----------------------------------------------------------------------------------------------------|
+| C-c C-t      | Rotate the TODO state of the current item among (unmarked) -> TODO -> DONE -> (unmarked)            |
+| S-M-RET      | insert TODO                                                                                         |
+|--------------+-----------------------------------------------------------------------------------------------------|
+| C-c C-q      | add tag                                                                                             |
+|--------------+-----------------------------------------------------------------------------------------------------|
+| M-TAB        | completion                                                                                          |
+
+
+** date, schedule
+
+- normal timestamp
+  < 2006-11-01 Wed 19:15 >
+- normal timestamp with repeater
+  < 2007-05-16 Wed 12:30 +1w >
+- timestamp range
+  < 2004-08-23 Mon >--< 2004-08-26 Thu >
+- timestamp won't be included in agenda
+  [ 2006-11-01 Wed ]
+
+
+|----------------+----------------------------------------------------------------------------------|
+| C-c .          | Prompt for a date and insert a corresponding timestamp                           |
+| C-c !          | but insert an inactive timestamp that will not cause an agenda entry             |
+| C-c C-d        | Insert ‘DEADLINE’ keyword along with a stamp in the line following the headline  |
+| C-c C-s        | Insert ‘SCHEDULED’ keyword along with a stamp in the line following the headline |
+|----------------+----------------------------------------------------------------------------------|
+| M-S-left/right | inc/dec month                                                                    |
+| S-left/right   | inc/dec day                                                                      |
+| S-up/down      | Change the item under the cursor in a timestamp                                  |
+|----------------+----------------------------------------------------------------------------------|
+
+** agenda
+|-------+--------------------------------------------------------------------|
+| C-c [ | Add current file to the list of agenda files.                      |
+| C-c ] | Remove current file from the list of agenda files.                 |
+| C-,   | Cycle through agenda file list, visiting one file after the other. |
+| C-c a | agenda view                                                        |
+|-------+--------------------------------------------------------------------|
+
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :ensure t

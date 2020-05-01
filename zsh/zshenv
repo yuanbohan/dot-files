@@ -1,0 +1,16 @@
+export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH
+
+# python
+export PATH=$HOME/Library/Python/3.7/bin:$PATH
+
+# rust
+export PATH=$HOME/.cargo/bin:$PATH
+
+# elixir
+export PATH=$HOME/.mix/escripts:$PATH
+
+# elixir-ls
+export PATH=$HOME/workspace/github.com/elixir-ls/release:$PATH
+
+# openssl
+export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"

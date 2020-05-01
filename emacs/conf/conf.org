@@ -64,32 +64,53 @@ find which makes init slow
   (setq indent-line-function 'insert-tab)
 #+END_SRC
 
-* UI related
+* utf-8 encoding
+
+#+BEGIN_SRC emacs-lisp
+  (setq locale-coding-system 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8)
+#+END_SRC
+
+* display time
+
+#+BEGIN_SRC emacs-lisp
+  ;; (setq display-time-24hr-format t)
+  ;; (setq display-time-format "%H:%M")
+  ;; (display-time-mode 1)
+#+END_SRC
+
+* yes-or-no
+
+#+BEGIN_SRC emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p) ; yes/no -> y/n
+#+END_SRC
+
+* font
+
+#+BEGIN_SRC emacs-lisp
+  ;; (set-frame-font "JetBrains Mono 24" nil t) ; https://www.jetbrains.com/lp/mono/
+  (set-frame-font "Ubuntu Mono 20" nil t) ; resolve org-mode chinese/english align issue
+#+END_SRC
+
+* global ui
 
 #+BEGIN_SRC emacs-lisp
   ;; (setq inhibit-startup-screen t) ; hide the welcome screen
-  (setq initial-major-mode 'text-mode)
-  (setq column-number-mode t)
+  ;; (setq initial-major-mode 'text-mode)
   (menu-bar-mode -1) ; hide menu bar
-  (global-linum-mode -1) ; hide line number
   (tool-bar-mode -1) ; hide tool bar
   (scroll-bar-mode -1) ; hide scroll bar
-  ;; (set-face-attribute 'default nil :height 240) ; default font size
-  ;; (set-frame-font "JetBrains Mono 24" nil t) ; https://www.jetbrains.com/lp/mono/
-  (set-frame-font "Ubuntu Mono 20" nil t) ; resolve org-mode chinese/english align issue
-
-  (fset 'yes-or-no-p 'y-or-n-p) ; yes/no -> y/n
+  (global-linum-mode -1) ; hide line number
   (global-hl-line-mode 1) ; highlight current line
-  ;; (set-face-background 'hl-line "darkseagreen") ; highlight current line color
+  (setq column-number-mode t)
+#+END_SRC
 
-  ;;;; trailing whitespace
-  ;; https://stackoverflow.com/questions/34531831/highlighting-trailing-whitespace-in-emacs-without-changing-character
-  ;; (setq-default show-trailing-whitespace t)
+* transparency
 
-  ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Useless-Whitespace.html
-  ;; (global-whitespace-mode)
-
-  ;; transparency
+#+BEGIN_SRC emacs-lisp
   ;; (set-frame-parameter (selected-frame) 'alpha '(85 100))
   ;; (add-to-list 'default-frame-alist '(alpha 85 100))
 #+END_SRC
@@ -97,12 +118,21 @@ find which makes init slow
 * smart-line
 
 #+BEGIN_SRC emacs-lisp
+  (defun duplicate-line()
+    (interactive)
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (open-line 1)
+    (next-line 1)
+    (yank))
+  (global-set-key (kbd "C-c C-`") 'duplicate-line)
+
   (defun smart-open-line ()
     "Insert an empty line after the current line. Position the cursor at its beginning, according to the current mode."
     (interactive)
     (move-end-of-line nil)
     (newline-and-indent))
-
   (defun smart-open-line-above ()
     "Insert an empty line above the current line. Position the cursor at it's beginning, according to the current mode."
     (interactive)
@@ -110,17 +140,16 @@ find which makes init slow
     (newline-and-indent)
     (forward-line -1)
     (indent-according-to-mode))
-
   (global-set-key (kbd "s-<return>") 'smart-open-line)
   (global-set-key (kbd "s-S-<return>") 'smart-open-line-above)
-
 
   (defun move-below-line-up ()
     "Join the current line with the next line."
     (interactive)
     (delete-indentation 1))
-
   (global-set-key (kbd "s-j") 'move-below-line-up)
+
+  (global-set-key (kbd "C-M-l") 'goto-line)
 #+END_SRC
 
 * comment code
@@ -141,22 +170,60 @@ find which makes init slow
 * beacon
 
 #+BEGIN_SRC emacs-lisp
-  ;; https://github.com/Malabarba/beacon
-  ;; (use-package beacon
-  ;;   :ensure t
-  ;;   :config
-  ;;   (beacon-mode 1)
-  ;;   (setq beacon-blink-duration 0.5)
-  ;;   (setq beacon-color "green"))
+    ;; https://github.com/Malabarba/beacon
+  (use-package beacon
+    :ensure t
+    :config
+    (beacon-mode 1)
+    (setq beacon-blink-duration 0.5)
+    ;; (setq beacon-color "green")
+    )
 #+END_SRC
 
 * theme
 
 #+BEGIN_SRC emacs-lisp
-  (use-package dracula-theme
+  ;; (use-package dracula-theme
+  ;;   :ensure t
+  ;;   :config
+  ;;   (load-theme 'dracula t))
+
+  (use-package zenburn-theme
     :ensure t
     :config
-    (load-theme 'dracula t))
+    (load-theme 'zenburn t))
+
+  ;; (use-package solarized-theme
+  ;;   :ensure t
+  ;;   :config
+  ;;   ;; (load-theme 'solarized-light t)
+  ;;   (load-theme 'solarized-dark t))
+
+  ;; (use-package spacemacs-theme
+  ;;   :defer t
+  ;;   :init (load-theme 'spacemacs-dark t))
+#+END_SRC
+
+* mode line
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package powerline
+  ;;   :ensure t
+  ;;   :config
+  ;;   (powerline-default-theme)
+  ;;   ;; (powerline-center-theme)
+  ;;   ;; (powerline-center-evil-theme)
+  ;;   ;; (powerline-vim-theme)
+  ;;   ;; (powerline-nano-theme)
+  ;;   )
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package spaceline
+    :ensure t
+    :config
+    (require 'spaceline-config)
+    (spaceline-emacs-theme))
 #+END_SRC
 
 * exec-path-from-shell
@@ -653,13 +720,9 @@ use lsp instead
      ("C-c b" . 'org-switchb)
      ("C-c c" . 'org-capture))
     :config
-    (require 'ox-md) ; https://orgmode.org/manual/Exporting.html
-    ;; https://stackoverflow.com/questions/22065589/org-mode-html-export-with-checkbox
+    (add-to-list 'org-structure-template-alist
+                 '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
     (setq org-html-checkbox-type 'html)
-    ;; https://orgmode.org/manual/Languages.html
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((python . t)))
     (setq org-log-done 'time)
     (setq org-hide-emphasis-markers t)
     (setq org-image-actual-width nil)
@@ -670,7 +733,6 @@ use lsp instead
   (use-package org-bullets
     :ensure t
     :defer 5
-    ;; :hook ('org-mode . (lambda () (org-bullets-mode 1)))
     :hook ('org-mode . 'org-bullets-mode)
     ;; :config
     ;; (setq org-bullets-bullet-list '("⓪" "①" "②" "③" "④" "⑤" "⑥" "⑦" "⑧" "⑨"))
@@ -681,16 +743,16 @@ use lsp instead
     :defer 5
     :after org)
 
-  (use-package ox-gfm
-    :ensure t
-    :defer 5
-    :after org)
-
   (use-package toc-org
     :ensure t
     :defer 5
     :after org
     :hook ('org-mode . 'toc-org-mode))
+
+  (use-package ox-gfm
+    :ensure t
+    :defer 5
+    :after org)
 
   ;; https://github.com/yjwen/org-reveal
   ;;
@@ -705,20 +767,6 @@ use lsp instead
     (setq org-reveal-root "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/")
     ;; (setq org-reveal-root "/home/yuanbo/workspace/github.com/reveal.js")
     )
-#+END_SRC
-
-* powerline
-
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package powerline
-  ;;   :ensure t
-  ;;   :config
-  ;;   (powerline-default-theme)
-  ;;   ;; (powerline-center-theme)
-  ;;   ;; (powerline-center-evil-theme)
-  ;;   ;; (powerline-vim-theme)
-  ;;   ;; (powerline-nano-theme)
-  ;;   )
 #+END_SRC
 
 * abbrev
@@ -754,6 +802,7 @@ use lsp instead
 #+END_SRC
 
 * misc packages
+
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode
     :ensure t
@@ -768,6 +817,14 @@ use lsp instead
     :defer 5)
 
   (use-package json-mode
+    :ensure t
+    :defer 5)
+
+  (use-package dockerfile-mode
+    :ensure t
+    :defer 5)
+
+  (use-package docker-compose-mode
     :ensure t
     :defer 5)
 #+END_SRC
@@ -798,6 +855,13 @@ use lsp instead
 * whitespace cleanup
 
 #+BEGIN_SRC emacs-lisp
+  ;;;; trailing whitespace
+  ;; https://stackoverflow.com/questions/34531831/highlighting-trailing-whitespace-in-emacs-without-changing-character
+  (setq-default show-trailing-whitespace t)
+
+  ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Useless-Whitespace.html
+  ;; (global-whitespace-mode)
+
   (use-package whitespace-cleanup-mode
     :ensure t
     :bind (("C-c C-SPC". 'whitespace-cleanup))
@@ -919,6 +983,74 @@ fill-column-indicator
 | C-x C-Space     | Move cursor to previous marked position (may be in another buffer) |
 | C-x C-x         | Move cursor to the other end of selection                          |
 
+* transpose
+
+| transpose char  | Ctrl+t        |
+| transpose word  | Meta+t        |
+| transpose line  | Ctrl+x Ctrl+t |
+| transpose sexps | Ctrl+Meta+t   |
+
+* buffer move
+
+#+BEGIN_SRC emacs-lisp
+  (use-package buffer-move
+    :ensure t
+    :defer 5)
+
+  (global-set-key (kbd "<C-S-up>")     'buf-move-up)
+  (global-set-key (kbd "<C-S-down>")   'buf-move-down)
+  (global-set-key (kbd "<C-S-left>")   'buf-move-left)
+  (global-set-key (kbd "<C-S-right>")  'buf-move-right)
+#+END_SRC
+
+* dired
+
+| C-x C-q | edit               |
+| t       | toggle mark        |
+| u/U     | unmark/ unmark all |
+| m       | mark               |
+| d       | mark to delete     |
+| D       | delete             |
+| C       | copy               |
+| R       | move, rename       |
+| ~^~       | parent dir         |
+| +       | create dir         |
+| *-/     | mark all dirs      |
+| s       | sort               |
+|         |                    |
+
+* command log
+
+| Alt+x | global-command-log-mode (optional. Turn on logging for any buffer) |
+| Alt+x | clm/open-command-log-buffer (show the key/command output buffer)   |
+
+* window enlarge
+
+#+BEGIN_SRC emacs-lisp
+  ;; enlarge window vertically
+  (global-set-key (kbd "C-c C-6") (kbd "C-u - 2 0 C-x ^"))
+  ;; (global-set-key (kbd "C-c C-6") )
+
+  ;; enlarge window horizontally
+  (global-set-key (kbd "C-c C-]") (kbd "C-u - 2 0 C-x }"))
+#+END_SRC
+
+* dashboard
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config
+    (dashboard-setup-startup-hook)
+
+    (setq dashboard-startup-banner 'official)
+    (setq dashboard-banner-logo-title "Welcome to Emacs")
+    (setq dashboard-set-init-info t)
+    (setq dashboard-set-footer t)
+
+    (setq dashboard-items '((projects . 5)
+                            (recents  . 5))))
+#+END_SRC
 * Footnotes
 
 [fn:1] [[https://emacs.stackexchange.com/questions/10611/how-to-easily-cherry-pick-with-magit][cherry pick with magit]]

@@ -583,7 +583,7 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
 
   (use-package cider
     :ensure t
-    :after clojure-moed
+    :after clojure-mode
     :config
     ;; go right to the REPL buffer when it's finished connecting
     (setq cider-repl-pop-to-buffer-on-connect t)
@@ -731,7 +731,6 @@ use lsp instead
 | C-c C-q      | add tag                                                                                             |
 |--------------+-----------------------------------------------------------------------------------------------------|
 | M-TAB        | completion                                                                                          |
-
 
 ** date, schedule
 
@@ -975,9 +974,11 @@ use lsp instead
   (global-set-key (kbd "C-x /") 'google-this-mode-submap)
 #+END_SRC
 
-* fci
+* fci fill-column-indicator
 
-fill-column-indicator
+|-------+-----------------|
+| C-x f | set-fill-column |
+| M-q   | fill-paragraph  |
 
 #+BEGIN_SRC emacs-lisp
   (use-package fill-column-indicator
@@ -988,7 +989,6 @@ fill-column-indicator
     ;; (require 'fill-column-indicator)
     (setq fci-rule-column 80))
 
-  ;; C-x f 'set-fill-column
   (global-set-key (kbd "C-c q") 'auto-fill-mode)
 #+END_SRC
 * ispell
@@ -1024,11 +1024,18 @@ fill-column-indicator
 | E          | to edit the replacement string                 |
 * macros
 
-- ~C-x (~
-- ~C-x )~
-- ~C-x e~
-- ~name-last-kbd-macro~ and ~m-x the-macro-name~
-- ~apply-macro-to-region-lines~
+|--------------------+-----------------------------|
+| C-x C-k            | kmacro prefix               |
+|--------------------+-----------------------------|
+| C-x (              | start kmacro                |
+| C-x )              | end kmacro                  |
+| C-x e              | call last kmacro            |
+|--------------------+-----------------------------|
+| C-x C-k n          | name-last-kbd-macro         |
+| m-x the-macro-name | exec the kmacro by name     |
+| C-x C-k r          | apply-macro-to-region-lines |
+| C-x C-k b          | kmacro-bind-to-key          |
+|--------------------+-----------------------------|
 
 * mark ring
 
@@ -1088,6 +1095,31 @@ fill-column-indicator
   ;; enlarge window horizontally
   (global-set-key (kbd "C-c C-]") (kbd "C-u - 2 0 C-x }"))
 #+END_SRC
+
+* bookmarks
+
+| C-x r m | Set a bookmark   |
+| C-x r l | List bookmarks   |
+| C-x r b | Jump to bookmark |
+
+* occur and highlight
+
+| M-s o           | List lines matching a pattern        |
+| M-x flush-lines | Flushes lines matching a pattern     |
+| M-x keep-lines  | Keeps only lines matching a pattern  |
+|-----------------+--------------------------------------|
+| M-s h p         | Highlights a phrase                  |
+| M-s h r         | Highlights a regular expression      |
+| M-s h .         | Highlights symbol at the point       |
+| M-s h u         | Removes highlighting under the point |
+
+* quoted insert
+
+C-q ARG
+
+Read next input character and insert it.
+This is useful for inserting control characters.
+such as, you want to insert TAB, , etc.
 
 * dashboard
 

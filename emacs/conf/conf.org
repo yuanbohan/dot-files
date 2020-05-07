@@ -91,19 +91,20 @@ find which makes init slow
 * font
 
 #+BEGIN_SRC emacs-lisp
-  ;; (set-frame-font "JetBrains Mono 24" nil t) ; https://www.jetbrains.com/lp/mono/
+  ;; (set-frame-font "JetBrains Mono 20" nil t) ; https://www.jetbrains.com/lp/mono/
   (set-frame-font "Ubuntu Mono 20" nil t) ; resolve org-mode chinese/english align issue
 #+END_SRC
 
 * global ui
 
 #+BEGIN_SRC emacs-lisp
-  ;; (setq inhibit-startup-screen t) ; hide the welcome screen
+  (setq inhibit-startup-screen t) ; hide the welcome screen
   ;; (setq initial-major-mode 'text-mode)
   (menu-bar-mode -1) ; hide menu bar
   (tool-bar-mode -1) ; hide tool bar
   (scroll-bar-mode -1) ; hide scroll bar
   (global-linum-mode -1) ; hide line number
+  ;; (visual-line-mode 1) ; word wrap
   (global-hl-line-mode 1) ; highlight current line
   (setq column-number-mode t)
 #+END_SRC
@@ -366,8 +367,9 @@ find which makes init slow
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t
-    :bind (("C-x g" . magit-status)
-           ("C-c g" . magit-dispatch-popup)))
+    :bind (("C-x g"   . 'magit-status)
+           ("C-c g"   . 'magit-dispatch-popup)
+           ("C-c M-g" . 'magit-file-dispatch)))
 
   ;; (use-package forge
   ;;   :ensure t
@@ -706,11 +708,39 @@ use lsp instead
     :ensure t
     :defer 5
     :mode ("\\.http\\'" . 'restclient-mode))
+
+  (use-package ob-restclient
+    :ensure t
+    :defer 5
+    :after restclient)
 #+END_SRC
 
 * org
 
+** narrow
+
+| C-x n        | narrow pretix                                                                                       |
+| C-x n s      | narrow subtree                                                                                      |
+| C-x n w      | widen                                                                                               |
+
+#+BEGIN_SRC emacs-lisp
+  (defun my/org-narrow-forward ()
+    "Move to the next subtree at same level, and narrow to it."
+    (interactive)
+    (widen)
+    (org-forward-heading-same-level 1)
+    (org-narrow-to-subtree))
+
+  (defun my/org-narrow-backward ()
+    "Move to the next subtree at same level, and narrow to it."
+    (interactive)
+    (widen)
+    (org-backward-heading-same-level 1)
+    (org-narrow-to-subtree))
+#+END_SRC
+
 ** normal
+
 |--------------+-----------------------------------------------------------------------------------------------------|
 | C-u C-c C-c  | make plain list to checkbox list. cursor at the beginning will make the whole list to checkbox list |
 | M-S-RET      | will add a new item with a checkbox                                                                 |
@@ -763,16 +793,31 @@ use lsp instead
 | C-c a | agenda view                                                        |
 |-------+--------------------------------------------------------------------|
 
+** config
+
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :ensure t
     :defer 5
     :bind
-    (("C-c l" . 'org-store-link)
-     ("C-c a" . 'org-agenda)
-     ("C-c b" . 'org-switchb)
-     ("C-c c" . 'org-capture))
+    (("C-c l"   . 'org-store-link)
+     ("C-c a"   . 'org-agenda)
+     ("C-c b"   . 'org-switchb)
+     ("C-c c"   . 'org-capture)
+     ("C-x n f" . 'my/org-narrow-forward)
+     ("C-x n b" . 'my/org-narrow-backward)
+     ("C-c M-." . 'org-open-at-point)
+     ("C-c M-," . 'org-mark-ring-goto))
     :config
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((restclient . t)
+       (clojure    . t)
+       (python     . t)
+       (latex      . t)
+       (shell      . t)))
+    (setq org-startup-truncated nil)
+    ;; (setq org-link-frame-setup '((file . find-file)))
     (add-to-list 'org-structure-template-alist
                  '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
     (setq org-html-checkbox-type 'html)
@@ -1078,12 +1123,19 @@ use lsp instead
 | +       | create dir         |
 | *-/     | mark all dirs      |
 | s       | sort               |
+| C-o     | display file       |
+| ~!~       | do shell command   |
 |         |                    |
 
 * command log
 
 | Alt+x | global-command-log-mode (optional. Turn on logging for any buffer) |
 | Alt+x | clm/open-command-log-buffer (show the key/command output buffer)   |
+
+#+BEGIN_SRC emacs-lisp
+  (use-package command-log-mode
+    :ensure t)
+#+END_SRC
 
 * window enlarge
 
@@ -1103,6 +1155,10 @@ use lsp instead
 | C-x r b | Jump to bookmark |
 
 * occur and highlight
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c o") 'occur)
+#+END_SRC
 
 | M-s o           | List lines matching a pattern        |
 | M-x flush-lines | Flushes lines matching a pattern     |
@@ -1124,18 +1180,18 @@ such as, you want to insert TAB, , etc.
 * dashboard
 
 #+BEGIN_SRC emacs-lisp
-  (use-package dashboard
-    :ensure t
-    :config
-    (dashboard-setup-startup-hook)
+  ;; (use-package dashboard
+  ;;   :ensure t
+  ;;   :config
+  ;;   (dashboard-setup-startup-hook)
 
-    (setq dashboard-startup-banner 'official)
-    (setq dashboard-banner-logo-title "Welcome to Emacs")
-    (setq dashboard-set-init-info t)
-    (setq dashboard-set-footer t)
+  ;;   (setq dashboard-startup-banner 'official)
+  ;;   (setq dashboard-banner-logo-title "Welcome to Emacs")
+  ;;   (setq dashboard-set-init-info t)
+  ;;   (setq dashboard-set-footer t)
 
-    (setq dashboard-items '((projects . 5)
-                            (recents  . 5))))
+  ;;   (setq dashboard-items '((projects . 5)
+  ;;                           (recents  . 5))))
 #+END_SRC
 * Footnotes
 

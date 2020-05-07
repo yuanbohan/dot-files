@@ -4,30 +4,26 @@
 #+DATE:
 #+EMAIL: yuanbo.han@gmail.com
 
-move ~dot-emacs~ to your home directory, rename to ~.emacs~, and restart your emacs
+I use GNU Emacs, and I use *org* file to config emacs, not just documentation. move this ~emacs~ directory to ~$HOME/.emacs~, restart your emacs, packages will be downloaded, installed and configured automatically.
 
-- I use GNU Emacs
-- make sure you can connect to melpa
-- comment package you don't need in ~conf.org~ to speed up
-- comment programming packages, some of them will fail emacs if you haven't installed on your OS
+** pay attention
 
-NOTE:
+- font setting may fail your emacs, comment it or change to font you have installed
+- pdf-tools will install some libraries, if you don't read pdf in Emacs, commen it
+- there are ~heavy~ coding related packages, you'd better comment packages you don't need
 
-- directly use ~org~ format file to config emacs, not just for readme.
-- there are ~heavy~ packages, before you restart emacs, you'd better comment the packages you don't need
-
-** major prod mode
+** major mode for coding
 
 - [X] Rust - lsp
 - [X] Clojure - cider
-- [X] Python - elpy
+- [X] Python - lsp
 - [X] Elixir - lsp
 - [ ] Haskell
 - [ ] Golang
 - [ ] \LaTeX
 - [ ] Java
 
-** Reference
+** Resources
 
 *** packages
 
@@ -37,14 +33,21 @@ NOTE:
 - [[https://github.com/joaotavora/yasnippet][yasnippet]] which you SHOULD use for coding
 - [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] which you SHOULD consider for better coding experience
 
-
 *** blogs or videos
 
-- https://cestlaz.github.io/stories/emacs/
+- [[https://www.gnu.org/software/emacs/tour/index.html][A Guided Tour of Emacs]]
+- [[https://sachachua.com/blog/][sachachua]]
+- [[https://cestlaz.github.io/stories/emacs/][Mike Zamansky]]
+- [[https://www.youtube.com/watch?v=VaBdlcYaZLQ&t=881s][Vim vs Emacs by distrotube]]
+- [[https://www.youtube.com/watch?v=CTOhosGQ2f0&t=29s][one very nice emacs workflow on YouTube]]
+- [[http://emacsrocks.com/][emacs rocks]]
+- [[https://www.reddit.com/r/emacs/comments/74hetz/emacs_everywhere/][emacs everywhere]]
+- [[https://www.youtube.com/channel/UCDEtZ7AKmwS0_GNJog01D2g][Uncle Dave - youtube channel]]
+- [[https://www.reddit.com/r/emacs/comments/88yzp4/better_way_to_run_terminals_in_emacs/][run terminals in emacs]]
+- [[https://justinbarclay.me/posts/literate_programming_against_rest_apis/][Literate Programming against REST APIs]]
 
 ** Thanks to
 
 - [[https://github.com/xtang][xtang]], I encounter Emacs
 - [[https://github.com/sunng87][sunng87]], I am doing something interesting with Rust
 - [[https://bearychat.com][BearyChat]], I encounter Clojure, Erlang
-

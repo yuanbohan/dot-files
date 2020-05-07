@@ -184,15 +184,15 @@ find which makes init slow
 * theme
 
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package dracula-theme
-  ;;   :ensure t
-  ;;   :config
-  ;;   (load-theme 'dracula t))
-
-  (use-package zenburn-theme
+  (use-package dracula-theme
     :ensure t
     :config
-    (load-theme 'zenburn t))
+    (load-theme 'dracula t))
+
+  ;; (use-package zenburn-theme
+  ;;   :ensure t
+  ;;   :config
+  ;;   (load-theme 'zenburn t))
 
   ;; (use-package solarized-theme
   ;;   :ensure t
@@ -971,6 +971,8 @@ use lsp instead
 
 [[https://github.com/politza/pdf-tools][pdf-tools]]
 
+** keys
+
 #+caption: Navigation
 | content                                    | key               |
 |--------------------------------------------+-------------------|
@@ -996,6 +998,8 @@ use lsp instead
 | Trim margins (set slice to bounding box) | s b       |
 | Reset margins                            | s r       |
 | Reset Zoom                               | 0         |
+
+** config
 
 #+BEGIN_SRC emacs-lisp
   (use-package tablist

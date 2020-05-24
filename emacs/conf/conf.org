@@ -395,20 +395,25 @@ find which makes init slow
 
 * neotree
 
+|---------+-----------------------------------------------------------------|
+| n       | next line, p previous line.                                     |
+| SPC     | or RET or TAB Open current item if it is a file.                |
+| U       | Go up a directory                                               |
+| g       | Refresh                                                         |
+| A       | Maximize/Minimize the NeoTree Window                            |
+| H       | Toggle display hidden files                                     |
+| <       | beginning-of-buffer                                             |
+| >       | end-of-buffer                                                   |
+| ?       | describe-mode                                                   |
+|---------+-----------------------------------------------------------------|
+| C-c C-n | Create a file or create a directory if filename ends with a ‘/’ |
+| C-c C-d | Delete a file or a directory.                                   |
+| C-c C-r | Rename a file or a directory.                                   |
+| C-c C-c | Change the root directory.                                      |
+| C-c C-p | Copy a file or a directory.                                     |
+| C-c C-a | neotree-collapse-all                                            |
+
 #+BEGIN_SRC emacs-lisp
-  ;; https://github.com/jaypei/emacs-neotree
-  ;; `n` next line, p previous line.
-  ;; `SPC` or RET or TAB Open current item if it is a file. Fold/Unfold current item if it is a directory.
-  ;; `U` Go up a directory
-  ;; `g` Refresh
-  ;; `A` Maximize/Minimize the NeoTree Window
-  ;; `H` Toggle display hidden files
-  ;; `O` Recursively open a directory
-  ;; `C-c C-n` Create a file or create a directory if filename ends with a ‘/’
-  ;; `C-c C-d` Delete a file or a directory.
-  ;; `C-c C-r` Rename a file or a directory.
-  ;; `C-c C-c` Change the root directory.
-  ;; `C-c C-p` Copy a file or a directory.
   (use-package neotree
     :ensure t
     :bind
@@ -925,6 +930,14 @@ use lsp instead
   (use-package docker-compose-mode
     :ensure t
     :defer 5)
+
+  (use-package ansible
+    :ensure t
+    :defer 5
+    :hook
+    (('yaml-mode . 'ansible))
+    :config
+    (setq ansible-vault-password-file "path/to/pwd/file"))
 #+END_SRC
 * avy
 [[https://github.com/abo-abo/avy][avy]]

@@ -90,6 +90,10 @@ find which makes init slow
 
 * font
 
+visit the link below to download and install font
+
+https://fonts.google.com/specimen/Ubuntu+Mono
+
 #+BEGIN_SRC emacs-lisp
   ;; (set-frame-font "JetBrains Mono 20" nil t) ; https://www.jetbrains.com/lp/mono/
   (set-frame-font "Ubuntu Mono 20" nil t) ; resolve org-mode chinese/english align issue
@@ -119,38 +123,38 @@ find which makes init slow
 * smart-line
 
 #+BEGIN_SRC emacs-lisp
-  (defun duplicate-line()
-    (interactive)
-    (move-beginning-of-line 1)
-    (kill-line)
-    (yank)
-    (open-line 1)
-    (next-line 1)
-    (yank))
-  (global-set-key (kbd "C-c C-`") 'duplicate-line)
+  ;; (defun duplicate-line()
+  ;;   (interactive)
+  ;;   (move-beginning-of-line 1)
+  ;;   (kill-line)
+  ;;   (yank)
+  ;;   (open-line 1)
+  ;;   (next-line 1)
+  ;;   (yank))
+  ;; (global-set-key (kbd "C-c C-`") 'duplicate-line)
 
-  (defun smart-open-line ()
-    "Insert an empty line after the current line. Position the cursor at its beginning, according to the current mode."
-    (interactive)
-    (move-end-of-line nil)
-    (newline-and-indent))
-  (defun smart-open-line-above ()
-    "Insert an empty line above the current line. Position the cursor at it's beginning, according to the current mode."
-    (interactive)
-    (move-beginning-of-line nil)
-    (newline-and-indent)
-    (forward-line -1)
-    (indent-according-to-mode))
-  (global-set-key (kbd "s-<return>") 'smart-open-line)
-  (global-set-key (kbd "s-S-<return>") 'smart-open-line-above)
+  ;; (defun smart-open-line ()
+  ;;   "Insert an empty line after the current line. Position the cursor at its beginning, according to the current mode."
+  ;;   (interactive)
+  ;;   (move-end-of-line nil)
+  ;;   (newline-and-indent))
+  ;; (defun smart-open-line-above ()
+  ;;   "Insert an empty line above the current line. Position the cursor at it's beginning, according to the current mode."
+  ;;   (interactive)
+  ;;   (move-beginning-of-line nil)
+  ;;   (newline-and-indent)
+  ;;   (forward-line -1)
+  ;;   (indent-according-to-mode))
+  ;; (global-set-key (kbd "s-<return>") 'smart-open-line)
+  ;; (global-set-key (kbd "s-S-<return>") 'smart-open-line-above)
 
-  (defun move-below-line-up ()
-    "Join the current line with the next line."
-    (interactive)
-    (delete-indentation 1))
-  (global-set-key (kbd "s-j") 'move-below-line-up)
+  ;; (defun move-below-line-up ()
+  ;;   "Join the current line with the next line."
+  ;;   (interactive)
+  ;;   (delete-indentation 1))
+  ;; (global-set-key (kbd "s-j") 'move-below-line-up)
 
-  (global-set-key (kbd "C-M-l") 'goto-line)
+  ;; (global-set-key (kbd "C-M-l") 'goto-line)
 #+END_SRC
 
 * comment code
@@ -233,10 +237,15 @@ find which makes init slow
   (use-package exec-path-from-shell
     :ensure t
     :config
+
     (when (memq window-system '(mac ns x))
-      (exec-path-from-shell-initialize)
+
+      (dolist (var '("https_proxy" "http_proxy" "all_proxy" "GOPATH" "GOPATH"))
+        (add-to-list 'exec-path-from-shell-variables var))
+
+      (exec-path-from-shell-initialize))
       ;; (exec-path-from-shell-copy-envs '("PATH"))
-      ))
+      )
 #+END_SRC
 
 * yasnippet
@@ -280,7 +289,8 @@ find which makes init slow
     (setq projectile-completion-system 'ivy)
     (setq projectile-dynamic-mode-line nil)
     :bind-keymap
-    ("s-p" . projectile-command-map))
+    ;; ("s-p" . projectile-command-map)
+    ("C-c p" . projectile-command-map))
 
   ;; (use-package helm-projectile
   ;;   :ensure t
@@ -333,11 +343,13 @@ find which makes init slow
      ;; ("M-i" . ivy-insert-current)
      ;; ("M-j" . ivy-yank-word)
 
-     ("C-c C-r" . 'ivy-resume)
-     ("C-c v"   . 'ivy-push-view)
-     ("C-c V"   . 'ivy-pop-view)
-     ("C-c k"   . 'counsel-rg)
-     ("C-x l"   . 'counsel-locate)))
+     ;; ("C-c C-r" . 'ivy-resume)
+     ;; ("C-c v"   . 'ivy-push-view)
+     ;; ("C-c V"   . 'ivy-pop-view)
+     ;; ("C-c k"   . 'counsel-rg)
+     ;; ("C-x l"   . 'counsel-locate)
+     ("C-x j"   . 'counsel-git-grep)
+     ))
 #+END_SRC
 
 * multiple cursor
@@ -475,95 +487,36 @@ find which makes init slow
   :hook ('prog-mode . 'rainbow-delimiters-mode))
 #+END_SRC
 
-* language server protocol
+* lsp mode
 
-- [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
-- [[https://elixirforum.com/t/emacs-elixir-setup-configuration-wiki/19196][elixir lsp setup]]
-- [[https://github.com/rust-lang/rls][rust languague server]]
+NOW, who are using lsp-mode in MY Emacs: Go
 
-** emacs lsp-mode setup
+#+begin_src emacs-lisp
+  ;; this is for Go
+  (defun lsp-go-install-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
 
-use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-ivy, fly-check~
-
-** rust languague server setup
-
-*** install rust
-
-*** install components
-
-~rustup component add rls rust-analysis rust-src~
-
-*** config emacs
-
-- install ~rust-mode~
-- hook ~('rust-mode . 'lsp)~
-
-** elixir languague server setup
-
-*** install elixir
-
-*** compile euixir-ls
-
-- ~git clone git@github.com:JakeBecker/elixir-ls.git~
-- ~cd elixir-ls~
-- ~mix deps.get~
-- ~mix elixir_ls.release~ // This will create a release/language_server.sh
-
-*** config emacs
-
-- install ~elixir-mode(required)~ and ~exunit (optional)~
-- config lsp-mode
-  - hook ~('elixir-mode . 'lsp)~
-  - exec-path ~(add-to-list 'exec-path "/path/to/elixir-ls/release")~
-
-** python language server setup
-
-- use pipenv to manage virtualenv and dependencies
-- activate the env, and ~pip install 'python-language-server[all]'~
-- in Emacs, ~M-x pyvenv-activate~
-
-** config
-
-#+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
-    :ensure t
-    :defer 5
-    ;; :init (setq lsp-keymap-prefix "s-g")
-    :hook
-    (('rust-mode   . 'lsp)
-     ('elixir-mode . 'lsp)
-     ('python-mode . 'lsp))
-    :bind-keymap ("s-l" . 'lsp-command-map)
-    :bind (:map lsp-command-map
-                ("d s" . 'lsp-ui-doc-show)
-                ("d h" . 'lsp-ui-doc-hide)))
+    :init
+    ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+    (setq lsp-keymap-prefix "C-c l")
+    :hook (;; if you want which-key integration
+           (lsp-mode . lsp-enable-which-key-integration)
 
-  ;; https://github.com/emacs-lsp/lsp-ui
-  ;;
-  ;; xref-find-{definitions,references} (bound to m-. m-?
-  (use-package lsp-ui
-    :ensure t
-    :defer 5
-    :after lsp-mode
-    :config
-    (setq lsp-ui-doc-enable nil)
-    (setq lsp-ui-doc-delay 5000))
-
-  (use-package company-lsp
-    :ensure t
-    :defer 5
-    :after lsp-mode)
-
-  (use-package flycheck
-    :ensure t
-    :defer 5
-    :after lsp-mode)
+           ;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+           (go-mode . lsp)
+           (go-mode . lsp-deferred)
+           (go-mode . lsp-go-install-save-hooks)
+           )
+    :commands (lsp lsp-deferred))
 
   (use-package lsp-ivy
-    :ensure t
-    :defer 5
-    :after lsp-mode)
-#+END_SRC
+    :commands lsp-ivy-workspace-symbol)
+
+  (use-package lsp-treemacs
+    :commands lsp-treemacs-errors-list)
+#+end_src
 
 * clojure and cider
 
@@ -573,20 +526,22 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
     :defer 5
     :hook (('clojure-mode . 'eldoc-mode))
     :config
+    (setq align-arguments t)
     ;; compojure indentation
-    (define-clojure-indent
-      (defroutes 'defun)
-      (GET 2)
-      (POST 2)
-      (PUT 2)
-      (DELETE 2)
-      (HEAD 2)
-      (ANY 2)
-      (OPTIONS 2)
-      (PATCH 2)
-      (rfn 2)
-      (let-routes 1)
-      (context 2)))
+    ;; (define-clojure-indent
+    ;;   (defroutes 'defun)
+    ;;   (GET 2)
+    ;;   (POST 2)
+    ;;   (PUT 2)
+    ;;   (DELETE 2)
+    ;;   (HEAD 2)
+    ;;   (ANY 2)
+    ;;   (OPTIONS 2)
+    ;;   (PATCH 2)
+    ;;   (rfn 2)
+    ;;   (let-routes 1)
+    ;;   (context 2))
+    )
 
   (use-package cider
     :ensure t
@@ -610,7 +565,7 @@ use the following ~lsp-mode~ related config ~lsp-mode, lsp-ui, company-lsp, lsp-
     (setq cider-prompt-for-symbol nil)
 
     ;; Just save without prompting, C-c C-k
-    (setq cider-prompt-save-file-on-load 'always-save)
+    (setq cider-save-file-on-load t)
 
     ;; evaluate code in Clojure files, display result overlay to be font-locked
     (setq cider-overlays-use-font-lock t)
@@ -655,24 +610,30 @@ use lsp instead
     (setq rust-format-on-save t))
 #+END_SRC
 
+* Go
+
+#+begin_src emacs-lisp
+
+#+end_src
+
 * elixir
 
 #+BEGIN_SRC emacs-lisp
-  (defun elixir-mode-before-save-hook ()
-    (when (eq major-mode 'elixir-mode)
-      (lsp-format-buffer)))
+  ;; (defun elixir-mode-before-save-hook ()
+  ;;   (when (eq major-mode 'elixir-mode)
+  ;;     (lsp-format-buffer)))
 
-  (use-package elixir-mode
-    :ensure t
-    :defer 5
-    :hook ('before-save . #'elixir-mode-before-save-hook))
+  ;; (use-package elixir-mode
+  ;;   :ensure t
+  ;;   :defer 5
+  ;;   :hook ('before-save . #'elixir-mode-before-save-hook))
 
-  (use-package exunit
-    :ensure t
-    :after elixir-mode
-    :bind (("C-c t a" . 'exunit-verify-all)
-           ("C-c t t" . 'exunit-verify)
-           ("C-c t s" . 'exunit-verify-single)))
+  ;; (use-package exunit
+  ;;   :ensure t
+  ;;   :after elixir-mode
+  ;;   :bind (("C-c t a" . 'exunit-verify-all)
+  ;;          ("C-c t t" . 'exunit-verify)
+  ;;          ("C-c t s" . 'exunit-verify-single)))
 #+END_SRC
 
 * company
@@ -709,15 +670,15 @@ use lsp instead
 | C-c C-a | show all collapsed regions                     |
 
 #+BEGIN_SRC emacs-lisp
-  (use-package restclient
-    :ensure t
-    :defer 5
-    :mode ("\\.http\\'" . 'restclient-mode))
+  ;; (use-package restclient
+  ;;   :ensure t
+  ;;   :defer 5
+  ;;   :mode ("\\.http\\'" . 'restclient-mode))
 
-  (use-package ob-restclient
-    :ensure t
-    :defer 5
-    :after restclient)
+  ;; (use-package ob-restclient
+  ;;   :ensure t
+  ;;   :defer 5
+  ;;   :after restclient)
 #+END_SRC
 
 * org
@@ -841,35 +802,35 @@ use lsp instead
     ;; (setq org-bullets-bullet-list '("⓪" "①" "②" "③" "④" "⑤" "⑥" "⑦" "⑧" "⑨"))
     :after org)
 
-  (use-package htmlize
-    :ensure t
-    :defer 5
-    :after org)
+  ;; (use-package htmlize
+  ;;   :ensure t
+  ;;   :defer 5
+  ;;   :after org)
 
-  (use-package toc-org
-    :ensure t
-    :defer 5
-    :after org
-    :hook ('org-mode . 'toc-org-mode))
+  ;; (use-package toc-org
+  ;;   :ensure t
+  ;;   :defer 5
+  ;;   :after org
+  ;;   :hook ('org-mode . 'toc-org-mode))
 
-  (use-package ox-gfm
-    :ensure t
-    :defer 5
-    :after org)
+  ;; (use-package ox-gfm
+  ;;   :ensure t
+  ;;   :defer 5
+  ;;   :after org)
 
-  ;; https://github.com/yjwen/org-reveal
-  ;;
-  ;; Available themes can be found in “css/theme/” in the reveal.js directory. black|league|night|simple|solarized|beige|blood|moon|serif|sky|white
-  ;; Available transitions are: default|cube|page|concave|zoom|linear|fade|none.
-  (use-package ox-reveal
-    :ensure t
-    :defer 5
-    :after org
-    :config
-    (setq org-reveal-mathjax t)
-    (setq org-reveal-root "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/")
-    ;; (setq org-reveal-root "/home/yuanbo/workspace/github.com/reveal.js")
-    )
+  ;; ;; https://github.com/yjwen/org-reveal
+  ;; ;;
+  ;; ;; Available themes can be found in “css/theme/” in the reveal.js directory. black|league|night|simple|solarized|beige|blood|moon|serif|sky|white
+  ;; ;; Available transitions are: default|cube|page|concave|zoom|linear|fade|none.
+  ;; (use-package ox-reveal
+  ;;   :ensure t
+  ;;   :defer 5
+  ;;   :after org
+  ;;   :config
+  ;;   (setq org-reveal-mathjax t)
+  ;;   (setq org-reveal-root "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/")
+  ;;   ;; (setq org-reveal-root "/home/yuanbo/workspace/github.com/reveal.js")
+  ;;   )
 #+END_SRC
 
 * abbrev
@@ -960,7 +921,8 @@ use lsp instead
     (show-paren-mode 1)
     (set-face-background 'show-paren-match (face-background 'default))
     (set-face-foreground 'show-paren-match "red")
-    (set-face-attribute 'show-paren-match nil :strike-through t :weight 'extra-bold))
+    ;; (set-face-attribute 'show-paren-match nil :strike-through t :weight 'extra-bold)
+    )
 #+END_SRC
 
 * whitespace cleanup
@@ -1015,15 +977,15 @@ use lsp instead
 ** config
 
 #+BEGIN_SRC emacs-lisp
-  (use-package tablist
-    :ensure t
-    :defer 5)
+  ;; (use-package tablist
+  ;;   :ensure t
+  ;;   :defer 5)
 
-  (use-package pdf-tools
-    :ensure t
-    :defer 5
-    :config
-    (pdf-loader-install))
+  ;; (use-package pdf-tools
+  ;;   :ensure t
+  ;;   :defer 5
+  ;;   :config
+  ;;   (pdf-loader-install))
 
 #+END_SRC
 * google this
@@ -1059,9 +1021,9 @@ use lsp instead
 
 
 #+BEGIN_SRC emacs-lisp
-  (setq ispell-personal-dictionary "~/.emacs.d/ispell_dicts")
-  (global-set-key (kbd "M-$")   'ispell-word)
-  (global-set-key (kbd "C-M-i") 'ispell-complete-word)
+  ;; (setq ispell-personal-dictionary "~/.emacs.d/ispell_dicts")
+  ;; (global-set-key (kbd "M-$")   'ispell-word)
+  ;; (global-set-key (kbd "C-M-i") 'ispell-complete-word)
 #+END_SRC
 * replace
 

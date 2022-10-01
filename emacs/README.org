@@ -16,10 +16,10 @@ I use GNU Emacs, and I use *org* file to config emacs, not just documentation. m
 
 - [X] Rust - lsp
 - [X] Clojure - cider
-- [X] Python - lsp
-- [X] Elixir - lsp
+- [ ] Python - lsp
+- [ ] Elixir - lsp
 - [ ] Haskell
-- [ ] Golang
+- [X] Golang
 - [ ] \LaTeX
 - [ ] Java
 
@@ -51,3 +51,4 @@ I use GNU Emacs, and I use *org* file to config emacs, not just documentation. m
 - [[https://github.com/xtang][xtang]], I encounter Emacs
 - [[https://github.com/sunng87][sunng87]], I am doing something interesting with Rust
 - [[https://bearychat.com][BearyChat]], I encounter Clojure, Erlang
+- [[https://tubitv.com][tubitv]], I did something interesting using Elixir

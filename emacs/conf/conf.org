@@ -157,6 +157,13 @@ https://fonts.google.com/specimen/Ubuntu+Mono
   ;; (global-set-key (kbd "C-M-l") 'goto-line)
 #+END_SRC
 
+* browse-at-remote
+
+#+begin_src emacs-lisp
+  (use-package browse-at-remote
+    :ensure t
+    :bind (("C-c r" . 'browse-at-remote)))
+#+end_src
 * comment code
 
 #+BEGIN_SRC emacs-lisp

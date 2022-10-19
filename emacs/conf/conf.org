@@ -102,12 +102,12 @@ https://fonts.google.com/specimen/Ubuntu+Mono
 * global ui
 
 #+BEGIN_SRC emacs-lisp
-  (setq inhibit-startup-screen t) ; hide the welcome screen
+  (setq inhibit-startup-screen -1) ; hide the welcome screen
   ;; (setq initial-major-mode 'text-mode)
-  (menu-bar-mode -1) ; hide menu bar
-  (tool-bar-mode -1) ; hide tool bar
-  (scroll-bar-mode -1) ; hide scroll bar
-  (global-linum-mode -1) ; hide line number
+  (menu-bar-mode -1) ; show/hide menu bar
+  (tool-bar-mode -1) ; show/hide tool bar
+  (scroll-bar-mode -1) ; show/hide scroll bar
+  (global-linum-mode -1) ; show/hide line number
   ;; (visual-line-mode 1) ; word wrap
   (global-hl-line-mode 1) ; highlight current line
   (setq column-number-mode t)
@@ -1239,19 +1239,34 @@ such as, you want to insert TAB, , etc.
 
 * dashboard
 
+| Shortcut                   | Function         |
+|----------------------------+------------------|
+| Tab Or C-i                 | Next Item        |
+| Shift-Tab                  | Previous Item    |
+| Return / Mouse Click / C-m | Open             |
+| r                          | Recent files     |
+| m                          | Bookmarks        |
+| p                          | Projects         |
+| a                          | Org-Mode Agenda  |
+| e                          | Registers        |
+| g                          | Refresh contents |
+| {                          | Previous section |
+| }                          | Next section     |
+
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package dashboard
-  ;;   :ensure t
-  ;;   :config
-  ;;   (dashboard-setup-startup-hook)
+  (use-package dashboard
+    :ensure t
+    :config
+    (dashboard-setup-startup-hook)
 
-  ;;   (setq dashboard-startup-banner 'official)
-  ;;   (setq dashboard-banner-logo-title "Welcome to Emacs")
-  ;;   (setq dashboard-set-init-info t)
-  ;;   (setq dashboard-set-footer t)
+    (setq dashboard-startup-banner 'official)
+    (setq dashboard-banner-logo-title "Welcome to Emacs")
+    (setq dashboard-center-content t)
+    (setq dashboard-show-shortcuts nil)
+    (setq dashboard-set-init-info t)
 
-  ;;   (setq dashboard-items '((projects . 5)
-  ;;                           (recents  . 5))))
+    (setq dashboard-items '((recents  . 5)
+                            (projects . 5))))
 #+END_SRC
 * browse url
 #+begin_src emacs-lisp
@@ -1368,17 +1383,17 @@ The prefix key C-x t
   ;;   :after (treemacs evil)
   ;;   :ensure t)
 
-  (use-package treemacs-projectile
-    :after (treemacs projectile)
-    :ensure t)
+  ;; (use-package treemacs-projectile
+  ;;   :after (treemacs projectile)
+  ;;   :ensure t)
 
   (use-package treemacs-icons-dired
     :hook (dired-mode . treemacs-icons-dired-enable-once)
     :ensure t)
 
-  (use-package treemacs-magit
-    :after (treemacs magit)
-    :ensure t)
+  ;; (use-package treemacs-magit
+  ;;   :after (treemacs magit)
+  ;;   :ensure t)
 
   ;; (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
   ;;   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
@@ -1390,6 +1405,24 @@ The prefix key C-x t
   ;;   :ensure t
   ;;   :config (treemacs-set-scope-type 'Tabs))
 
+#+end_src
+
+* libvterm
+
+C-c C-t vterm-copy-mode
+C-c C-l vterm-clear-scrollback
+
+~brew install cmake libtool~
+
+compile libvterm is needed
+#+begin_src elisp
+  (use-package vterm
+    :ensure t
+    :defer 5
+    :config
+    ;; (setq vterm-kill-buffer-on-exit t)
+    (setq vterm-copy-exclude-prompt nil))
+  (global-set-key (kbd "C-c t") 'vterm-other-window)
 #+end_src
 
 * Footnotes

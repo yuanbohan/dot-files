@@ -988,7 +988,10 @@ https://robert.kra.hn/posts/rust-emacs-setup/
   (use-package avy
     :ensure t
     :bind
-    (("s-c" . 'avy-goto-char-2)))
+    (
+     ;; ("s-c" . 'avy-goto-char-2)
+     ("s-c" . 'avy-goto-word-1)
+     ))
 #+END_SRC
 
 * Highlights matching parenthesis
@@ -1011,7 +1014,7 @@ https://robert.kra.hn/posts/rust-emacs-setup/
 #+BEGIN_SRC emacs-lisp
   ;;;; trailing whitespace
   ;; https://stackoverflow.com/questions/34531831/highlighting-trailing-whitespace-in-emacs-without-changing-character
-  (setq-default show-trailing-whitespace t)
+  ;; (setq-default show-trailing-whitespace t)
 
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Useless-Whitespace.html
   ;; (global-whitespace-mode)
@@ -1200,12 +1203,21 @@ https://robert.kra.hn/posts/rust-emacs-setup/
 * window enlarge
 
 #+BEGIN_SRC emacs-lisp
+  ;; C-x + (balance-windows) to make windows the same heights and widths.
+
   ;; enlarge window vertically
-  (global-set-key (kbd "C-c C-6") (kbd "C-u - 2 0 C-x ^"))
+  ;; (global-set-key (kbd "C-c ^") (kbd "C-u - 20 C-x ^"))
   ;; (global-set-key (kbd "C-c C-6") )
 
   ;; enlarge window horizontally
-  (global-set-key (kbd "C-c C-]") (kbd "C-u - 2 0 C-x }"))
+  ;; (global-set-key (kbd "C-c }") (kbd "C-u - 20 C-x }"))
+  ;; (global-set-key (kbd "C-c {") (kbd "C-u - 20 C-x {"))
+
+
+  (global-set-key (kbd "S-C-<left>")  'shrink-window-horizontally)
+  (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+  (global-set-key (kbd "S-C-<down>")  'shrink-window)
+  (global-set-key (kbd "S-C-<up>")    'enlarge-window)
 #+END_SRC
 
 * bookmarks
@@ -1214,7 +1226,7 @@ https://robert.kra.hn/posts/rust-emacs-setup/
 | C-x r l | List bookmarks   |
 | C-x r b | Jump to bookmark |
 
-* occur and highlight
+* Occur and highlight
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c o") 'occur)

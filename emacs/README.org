@@ -9,6 +9,7 @@ I use GNU Emacs, and I use *org* file to config emacs, not just documentation. m
 ** pay attention
 
 - font setting may fail your emacs, comment it or change to font you have installed
+- as for [emacs-libvterm](https://github.com/akermu/emacs-libvterm), it needs compile with cmake.
 - pdf-tools will install some libraries, if you don't read pdf in Emacs, commen it
 - there are ~heavy~ coding related packages, you'd better comment packages you don't need
 
@@ -19,7 +20,7 @@ I use GNU Emacs, and I use *org* file to config emacs, not just documentation. m
 - [ ] Python - lsp
 - [ ] Elixir - lsp
 - [ ] Haskell
-- [X] Golang
+- [X] Golang - lsp
 - [ ] \LaTeX
 - [ ] Java
 
@@ -46,9 +47,9 @@ I use GNU Emacs, and I use *org* file to config emacs, not just documentation. m
 - [[https://www.reddit.com/r/emacs/comments/88yzp4/better_way_to_run_terminals_in_emacs/][run terminals in emacs]]
 - [[https://justinbarclay.me/posts/literate_programming_against_rest_apis/][Literate Programming against REST APIs]]
 
-** Thanks to
+** Thanks
 
-- [[https://github.com/xtang][xtang]], I encounter Emacs
-- [[https://github.com/sunng87][sunng87]], I am doing something interesting with Rust
-- [[https://bearychat.com][BearyChat]], I encounter Clojure, Erlang
+- [[https://github.com/xtang][xtang]], I encountered Emacs
+- [[https://github.com/sunng87][sunng87]], I did something interesting with Rust
+- [[https://bearychat.com][BearyChat]], I encountered Clojure, Erlang
 - [[https://tubitv.com][tubitv]], I did something interesting using Elixir

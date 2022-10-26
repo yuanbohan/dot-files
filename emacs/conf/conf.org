@@ -1,5 +1,58 @@
 #+PROPERTY: header-args :comments yes :results silent
 
+shortcuts frequently used but easy to forget
+
+| command         | description                              |
+|-----------------+------------------------------------------|
+| C-S-<backspace> | runs the command kill-whole-line         |
+| C-c b           | browse-url                               |
+| C-c r           | browse-at-remote                         |
+| C-x C-q         | Toggles read only mode                   |
+| s-c             | avy-goto-xxx                             |
+| C-c C-SPC       | whitespace-cleanup                       |
+| C-x /           | google this                              |
+| M-\             | runs the command delete-horizontal-space |
+| M-!             | runs the command shell-command           |
+| M-&             | Like M-!, but asynchronous               |
+|-----------------+------------------------------------------|
+| M-j             | ivy-yank-word                            |
+| C-c k           | counsel-rg                               |
+| C-*             | swiper-thing-at-point                    |
+| M-o             | ivy-dispatching-done                     |
+|-----------------+------------------------------------------|
+| M-}             | Move forward to end of paragraph         |
+| M-{             | Move backward to start of paragraph      |
+|-----------------+------------------------------------------|
+| C-t             | Transpose characters                     |
+| M-t             | Transpose words                          |
+|-----------------+------------------------------------------|
+| C-x ( and C-x ) | Starts and stops macro recording         |
+| C-x e           | Plays last macro                         |
+|-----------------+------------------------------------------|
+| C-x 4 d/f/b     | Opens dired/file/buffer in other window  |
+| C-x r m/l/b     | Set/List/Jump bookmark                   |
+| C-c o           | occur                                    |
+| M-o             | runs the command ace-window              |
+| s-t             | treemacs                                 |
+| C-c t           | libvterm                                 |
+| s-p             | projectile                               |
+| C-x w           | elfeed                                   |
+| C-=             | expand-region                            |
+|-----------------+------------------------------------------|
+| C-c e l         | eglot                                    |
+| C-c C-r         | eglot-rename                             |
+| C-c C-'         | eglot-code-actions                       |
+|                 |                                          |
+| C-M-i           | runs the command complete-symbol         |
+| C-h .           | runs the command eldoc-doc-buffer        |
+| M-?             | runs the command xref-find-references    |
+| M-.             | runs the command xref-find-definitions   |
+| M-,             | runs the command xref-pop-marker-stack   |
+| s-/             | runs the command comment-region-or-line  |
+|-----------------+------------------------------------------|
+| Org mode        | TODO                                     |
+|-----------------+------------------------------------------|
+
 * speed init
 
 [[https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/][reddit]]
@@ -102,8 +155,10 @@ https://fonts.google.com/specimen/Ubuntu+Mono
 * global ui
 
 #+BEGIN_SRC emacs-lisp
-  (setq inhibit-startup-screen -1) ; hide the welcome screen
-  ;; (setq initial-major-mode 'text-mode)
+  (setq inhibit-startup-screen t) ; hide the welcome screen
+  (setq initial-major-mode 'fundamental-mode) ; change *scratch* major mode
+  (setq initial-scratch-message "\
+  # This buffer is for notes you don't want to save") ; change message in *scratch*
   (menu-bar-mode -1) ; show/hide menu bar
   (tool-bar-mode -1) ; show/hide tool bar
   (scroll-bar-mode -1) ; show/hide scroll bar
@@ -260,14 +315,14 @@ https://fonts.google.com/specimen/Ubuntu+Mono
     :ensure t
     :config
 
+    (setq exec-path-from-shell-arguments nil)
+
     (when (memq window-system '(mac ns x))
 
-      (dolist (var '("https_proxy" "http_proxy" "all_proxy" "GOPATH" "GOPATH"))
+      (dolist (var '("https_proxy" "http_proxy" "all_proxy" "GOPATH"))
         (add-to-list 'exec-path-from-shell-variables var))
 
-      (exec-path-from-shell-initialize))
-      ;; (exec-path-from-shell-copy-envs '("PATH"))
-      )
+      (exec-path-from-shell-initialize)))
 #+END_SRC
 
 * yasnippet
@@ -354,6 +409,7 @@ https://fonts.google.com/specimen/Ubuntu+Mono
     (setq ivy-use-virtual-buffers t)
     (setq enable-recursive-minibuffers t)
     (setq ivy-count-format "(%d/%d) ")
+    (setq ivy-wrap t)
     :bind
     (("C-s"     . 'swiper-isearch)
      ("M-x"     . 'counsel-M-x)
@@ -364,15 +420,23 @@ https://fonts.google.com/specimen/Ubuntu+Mono
      ;; ("M-n" . ivy-next-history-element)
      ;; ("M-p" . ivy-previous-history-element)
      ;; ("M-i" . ivy-insert-current)
-     ;; ("M-j" . ivy-yank-word)
+     ("M-j" . 'ivy-yank-word) ;; C-s M-j this will search symbol at point
 
      ;; ("C-c C-r" . 'ivy-resume)
      ;; ("C-c v"   . 'ivy-push-view)
      ;; ("C-c V"   . 'ivy-pop-view)
-     ;; ("C-c k"   . 'counsel-rg)
-     ;; ("C-x l"   . 'counsel-locate)
-     ("C-x j"   . 'counsel-git-grep)
+     ("C-c k"   . 'counsel-rg)
+     ;; ("C-c l"   . 'counsel-locate)
+     ;; ("C-c g"   . 'counsel-git)
+     ;; ("C-c j"   . 'counsel-git-grep)
+     ;; ("C-S-o"   . 'counsel-rhythmbox)
+     ("C-*"     . 'swiper-thing-at-point)
      ))
+
+
+  (use-package counsel-tramp
+    :ensure t
+    :after counsel)
 #+END_SRC
 
 * multiple cursor
@@ -510,27 +574,36 @@ https://fonts.google.com/specimen/Ubuntu+Mono
   :hook ('prog-mode . 'rainbow-delimiters-mode))
 #+END_SRC
 
-* lsp mode
+* eglot
 
-#+begin_src emacs-lisp
-  (use-package lsp-mode
-    :init
-    ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-    (setq lsp-keymap-prefix "C-c l")
-    :hook ((lsp-mode . lsp-enable-which-key-integration))
+#+begin_src elisp
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; for Go
+    ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md#configuring-eglot
+  (defun project-find-go-module (dir)
+    (when-let ((root (locate-dominating-file dir "go.mod")))
+      (cons 'go-module root)))
 
-    :commands (lsp lsp-deferred)
+  (defun eglot-format-buffer-on-save ()
+    (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
 
+  (cl-defmethod project-root ((project (head go-module)))
+    (cdr project))
+
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (use-package eglot
+    :ensure t
     :config
-    (setq lsp-eldoc-hook nil)
-    (setq lsp-signature-auto-activate nil)
-    (setq lsp-enable-symbol-highlighting nil))
+    ;; for Go
+    (add-hook 'project-find-functions #'project-find-go-module)
+    (add-hook 'go-mode-hook #'eglot-format-buffer-on-save)
 
-  (use-package lsp-ivy
-    :commands lsp-ivy-workspace-symbol)
-
-  (use-package lsp-treemacs
-    :commands lsp-treemacs-errors-list)
+    :bind
+    (("C-c e l" . 'eglot)
+     ("C-c C-r" . 'eglot-rename)
+     ("C-c C-'" . 'eglot-code-actions)))
 #+end_src
 
 * clojure and cider
@@ -619,79 +692,22 @@ use lsp instead
 
 #+begin_src emacs-lisp
   (use-package go-mode
-      :ensure t
-      :defer 5
-      :hook ((go-mode . lsp-deferred)
-             (before-save . lsp-format-buffer)
-             (before-save . lsp-organize-imports)))
+    :ensure t
+    :defer 5
+    ;; :hook ((go-mode . lsp-deferred)
+    ;;        (before-save . lsp-format-buffer)
+    ;;        (before-save . lsp-organize-imports))
+    )
 #+end_src
 
 * rust
 
-https://robert.kra.hn/posts/rust-emacs-setup/
-
 #+BEGIN_SRC emacs-lisp
-  (defun rk/rustic-mode-hook ()
-    ;; so that run C-c C-c C-r works without having to confirm, but don't try to
-    ;; save rust buffers that are not file visiting. Once
-    ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
-    ;; no longer be necessary.
-    (when buffer-file-name
-      (setq-local buffer-save-without-query t))
-    (add-hook 'before-save-hook 'lsp-format-buffer nil t))
-
   (use-package rust-mode
     :ensure t
     :defer 5
     :config
-    (setq rust-format-on-save t)
-
-    :hook (rust-mode . lsp-deferred))
-
-  (use-package rust-playground
-    :ensure t
-    :defer 5
-    :config
     (setq rust-format-on-save t))
-
-  ;; C-c C-c
-  (use-package rustic
-    :ensure t
-    :after rust-mode
-    :bind (:map rustic-mode-map
-                ("M-j" . lsp-ui-imenu)
-                ("M-?" . lsp-find-references)
-                ("C-c C-c l" . flycheck-list-errors)
-                ("C-c C-c a" . lsp-execute-code-action)
-                ("C-c C-c r" . lsp-rename)
-                ("C-c C-c q" . lsp-workspace-restart)
-                ("C-c C-c Q" . lsp-workspace-shutdown)
-                ("C-c C-c s" . lsp-rust-analyzer-status))
-
-    :custom
-    ;; rust custom
-    ;; what to use when checking on-save. "check" is default, I prefer clippy
-    (lsp-rust-analyzer-cargo-watch-command "clippy")
-
-    ;; enable / disable the hints as you prefer:
-    ;; (lsp-rust-analyzer-server-display-inlay-hints t)
-    ;; (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-    ;; (lsp-rust-analyzer-display-chaining-hints t)
-    ;; (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
-    ;; (lsp-rust-analyzer-display-closure-return-type-hints t)
-    ;; (lsp-rust-analyzer-display-parameter-hints nil)
-    ;; (lsp-rust-analyzer-display-reborrow-hints nil)
-
-
-    :config
-    ;; uncomment for less flashiness
-    ;; (setq lsp-eldoc-hook nil)
-    ;; (setq lsp-enable-symbol-highlighting nil)
-    ;; (setq lsp-signature-auto-activate nil)
-
-    ;; comment to disable rustfmt on save
-    (setq rustic-format-on-save t)
-    (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 #+END_SRC
 
 * elixir
@@ -1266,23 +1282,79 @@ such as, you want to insert TAB, , etc.
 | }                          | Next section     |
 
 #+BEGIN_SRC emacs-lisp
-  (use-package dashboard
-    :ensure t
-    :config
-    (dashboard-setup-startup-hook)
+  ;; (use-package dashboard
+  ;;   :ensure t
+  ;;   :config
+  ;;   (dashboard-setup-startup-hook)
 
-    (setq dashboard-startup-banner 'official)
-    (setq dashboard-banner-logo-title "Welcome to Emacs")
-    (setq dashboard-center-content t)
-    (setq dashboard-show-shortcuts nil)
-    (setq dashboard-set-init-info t)
+  ;;   (setq dashboard-startup-banner 'official)
+  ;;   (setq dashboard-banner-logo-title "Welcome to Emacs")
+  ;;   (setq dashboard-center-content t)
+  ;;   (setq dashboard-show-shortcuts nil)
+  ;;   (setq dashboard-set-init-info t)
 
-    (setq dashboard-items '((recents  . 5)
-                            (projects . 5))))
+  ;;   (setq dashboard-items '((recents  . 5)
+  ;;                           (projects . 5))))
 #+END_SRC
 * browse url
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c b") 'browse-url)
+#+end_src
+
+* elfeed
+
+** overview
+
+rss feed in Emacs
+
+https://github.com/skeeto/elfeed
+https://lucidmanager.org/productivity/read-rss-feeds-with-emacs-and-elfeed/
+
+** shortcuts
+
+RET: view selected entry in a buffer
+b: Open the article in the browser
+G: Fetch feed updates from the servers
+s: Update the search filter
+c: Clear the search filter
+r: Mark the entry as read
+u: Mark the entry as unread
+g: Refresh view of the feed listing (remove unread items)
+q: Quit the browser
++: add a specific tag to selected entries
+-: remove a specific tag from selected entries
+
+** Here are some example filters.
+
+*** @6-months-ago +unread
+Only show unread entries of the last six months. This is the default filter.
+
+*** linu[xs] @1-year-old
+Only show entries about Linux or Linus from the last year.
+
+*** -unread +youtube #10
+Only show the most recent 10 previously-read entries tagged as youtube.
+
+*** +unread !x?emacs
+Only show unread entries not having emacs or xemacs in the title or link.
+
+*** +emacs =http://example.org/feed/
+Only show entries tagged as emacs from a specific feed.
+
+#+begin_src elisp
+  (use-package elfeed
+    :ensure t
+    :defer 5
+    :bind (("C-x w" . 'elfeed))
+    :config
+    ;; (setq-default elfeed-search-filter "@1-week-ago +unread ")
+
+    (setq elfeed-db-directory (expand-file-name "elfeed" user-emacs-directory)
+          elfeed-show-entry-switch 'display-buffer)
+
+    (setq elfeed-feeds
+          '(("https://planet.emacslife.com/atom.xml" emacs)
+            ("https://tdodge.consulting/blog/rss.xml" blog))))
 #+end_src
 
 * tab bar
@@ -1428,13 +1500,13 @@ C-c C-l vterm-clear-scrollback
 
 compile libvterm is needed
 #+begin_src elisp
-  (use-package vterm
-    :ensure t
-    :defer 5
-    :config
-    ;; (setq vterm-kill-buffer-on-exit t)
-    (setq vterm-copy-exclude-prompt nil))
-  (global-set-key (kbd "C-c t") 'vterm-other-window)
+  ;; (use-package vterm
+  ;;   :ensure t
+  ;;   :defer 5
+  ;;   :config
+  ;;   ;; (setq vterm-kill-buffer-on-exit t)
+  ;;   (setq vterm-copy-exclude-prompt nil))
+  ;; (global-set-key (kbd "C-c t") 'vterm-other-window)
 #+end_src
 
 * Footnotes

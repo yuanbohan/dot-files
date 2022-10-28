@@ -1,57 +1,62 @@
 #+PROPERTY: header-args :comments yes :results silent
 
-shortcuts frequently used but easy to forget
+* shortcuts frequently used but easy to forget
 
-| command         | description                              |
-|-----------------+------------------------------------------|
-| C-S-<backspace> | runs the command kill-whole-line         |
-| C-c b           | browse-url                               |
-| C-c r           | browse-at-remote                         |
-| C-x C-q         | Toggles read only mode                   |
-| s-c             | avy-goto-xxx                             |
-| C-c C-SPC       | whitespace-cleanup                       |
-| C-x /           | google this                              |
-| M-\             | runs the command delete-horizontal-space |
-| M-!             | runs the command shell-command           |
-| M-&             | Like M-!, but asynchronous               |
-|-----------------+------------------------------------------|
-| M-j             | ivy-yank-word                            |
-| C-c k           | counsel-rg                               |
-| C-*             | swiper-thing-at-point                    |
-| M-o             | ivy-dispatching-done                     |
-|-----------------+------------------------------------------|
-| M-}             | Move forward to end of paragraph         |
-| M-{             | Move backward to start of paragraph      |
-|-----------------+------------------------------------------|
-| C-t             | Transpose characters                     |
-| M-t             | Transpose words                          |
-|-----------------+------------------------------------------|
-| C-x ( and C-x ) | Starts and stops macro recording         |
-| C-x e           | Plays last macro                         |
-|-----------------+------------------------------------------|
-| C-x 4 d/f/b     | Opens dired/file/buffer in other window  |
-| C-x r m/l/b     | Set/List/Jump bookmark                   |
-| C-c o           | occur                                    |
-| M-o             | runs the command ace-window              |
-| s-t             | treemacs                                 |
-| C-c t           | libvterm                                 |
-| s-p             | projectile                               |
-| C-x w           | elfeed                                   |
-| C-=             | expand-region                            |
-|-----------------+------------------------------------------|
-| C-c e l         | eglot                                    |
-| C-c C-r         | eglot-rename                             |
-| C-c C-'         | eglot-code-actions                       |
-|                 |                                          |
-| C-M-i           | runs the command complete-symbol         |
-| C-h .           | runs the command eldoc-doc-buffer        |
-| M-?             | runs the command xref-find-references    |
-| M-.             | runs the command xref-find-definitions   |
-| M-,             | runs the command xref-pop-marker-stack   |
-| s-/             | runs the command comment-region-or-line  |
-|-----------------+------------------------------------------|
-| Org mode        | TODO                                     |
-|-----------------+------------------------------------------|
+| command         | description                             |
+|-----------------+-----------------------------------------|
+| C-S-<backspace> | runs the command kill-whole-line        |
+| C-c M-k         | duplicate-line                          |
+| C-c C-k         | copy-line                               |
+| C-c b           | browse-url                              |
+| C-c r           | browse-at-remote                        |
+| C-x C-q         | Toggles read only mode                  |
+| C-c C-SPC       | whitespace-cleanup                      |
+| C-x /           | google this                             |
+| M-\             | delete-horizontal-space                 |
+| M-/             | dabbrev-expand                          |
+| M-!             | shell-command                           |
+| M-&             | Like M-!, but asynchronous              |
+|-----------------+-----------------------------------------|
+| M-j             | ivy-yank-word                           |
+| C-c k           | counsel-rg                              |
+| C-*             | swiper-thing-at-point                   |
+| M-o             | ivy-dispatching-done                    |
+|-----------------+-----------------------------------------|
+| M-}             | Move forward to end of paragraph        |
+| M-{             | Move backward to start of paragraph     |
+|-----------------+-----------------------------------------|
+| C-t             | Transpose characters                    |
+| M-t             | Transpose words                         |
+|-----------------+-----------------------------------------|
+| C-x ( and C-x ) | Starts and stops macro recording        |
+| C-x e           | Plays last macro                        |
+|-----------------+-----------------------------------------|
+| C-x 4 d/f/b     | Opens dired/file/buffer in other window |
+| C-x r m/l/b     | Set/List/Jump bookmark                  |
+| C-c o           | occur                                   |
+| M-o             | ace-window                              |
+| s-t             | treemacs                                |
+| C-c t           | libvterm                                |
+| s-p             | projectile                              |
+| C-x w           | elfeed                                  |
+| C-=             | expand-region                           |
+| s-c             | avy-goto-xxx                            |
+|-----------------+-----------------------------------------|
+| C-c e l         | eglot                                   |
+| C-c C-r         | eglot-rename                            |
+| C-c C-'         | eglot-code-actions                      |
+|                 |                                         |
+| C-M-i           | complete-symbol                         |
+| C-h .           | eldoc-doc-buffer                        |
+| M-?             | xref-find-references                    |
+| M-.             | xref-find-definitions                   |
+| M-,             | xref-pop-marker-stack                   |
+| s-/             | comment-region-or-line                  |
+| C-c M-p         | flymake-goto-prev-error                 |
+| C-c M-n         | flymake-goto-next-error                 |
+|-----------------+-----------------------------------------|
+| Org mode        | TODO                                    |
+|-----------------+-----------------------------------------|
 
 * speed init
 
@@ -178,15 +183,24 @@ https://fonts.google.com/specimen/Ubuntu+Mono
 * smart-line
 
 #+BEGIN_SRC emacs-lisp
-  ;; (defun duplicate-line()
-  ;;   (interactive)
-  ;;   (move-beginning-of-line 1)
-  ;;   (kill-line)
-  ;;   (yank)
-  ;;   (open-line 1)
-  ;;   (next-line 1)
-  ;;   (yank))
-  ;; (global-set-key (kbd "C-c C-`") 'duplicate-line)
+  (defun copy-line (arg)
+    "Copy lines (as many as prefix argument) in the kill ring"
+    (interactive "p")
+    (kill-ring-save (line-beginning-position)
+                    (line-beginning-position (+ 1 arg)))
+    (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
+  ;; optional key binding
+  (global-set-key (kbd "C-c C-k")'copy-line)
+
+  (defun duplicate-line()
+    (interactive)
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (open-line 1)
+    (next-line 1)
+    (yank))
+  (global-set-key (kbd "C-c M-k") 'duplicate-line)
 
   ;; (defun smart-open-line ()
   ;;   "Insert an empty line after the current line. Position the cursor at its beginning, according to the current mode."
@@ -313,12 +327,12 @@ https://fonts.google.com/specimen/Ubuntu+Mono
 #+BEGIN_SRC emacs-lisp
   (use-package exec-path-from-shell
     :ensure t
+    :defer 5
     :config
 
-    (setq exec-path-from-shell-arguments nil)
+    ;; (setq exec-path-from-shell-arguments nil)
 
     (when (memq window-system '(mac ns x))
-
       (dolist (var '("https_proxy" "http_proxy" "all_proxy" "GOPATH"))
         (add-to-list 'exec-path-from-shell-variables var))
 
@@ -527,15 +541,19 @@ https://fonts.google.com/specimen/Ubuntu+Mono
 #+BEGIN_SRC emacs-lisp
   (use-package paredit
     :ensure t
-    :hook (('cider-repl-mode          . 'enable-paredit-mode)
-           ('cider-mode               . 'enable-paredit-mode)
-           ('clojure-mode             . 'enable-paredit-mode)
-           ('emacs-lisp-mode          . 'enable-paredit-mode)
-           ('ielm-mode                . 'enable-paredit-mode)
-           ('lisp-mode                . 'enable-paredit-mode)
-           ('lisp-interaction-mode    . 'enable-paredit-mode)
-           ('scheme-mode              . 'enable-paredit-mode)
-           ('haskell-interactive-mode . 'enable-paredit-mode)))
+    :hook
+    (('cider-repl-mode          . 'enable-paredit-mode)
+     ('cider-mode               . 'enable-paredit-mode)
+     ('clojure-mode             . 'enable-paredit-mode)
+     ('emacs-lisp-mode          . 'enable-paredit-mode)
+     ('ielm-mode                . 'enable-paredit-mode)
+     ('lisp-mode                . 'enable-paredit-mode)
+     ('lisp-interaction-mode    . 'enable-paredit-mode)
+     ('scheme-mode              . 'enable-paredit-mode)
+     ('haskell-interactive-mode . 'enable-paredit-mode)))
+
+  (global-set-key (kbd "C-s-<right>") 'paredit-forward-slurp-sexp)
+  (global-set-key (kbd "C-s-<left>") 'paredit-forward-barf-sexp)
 #+END_SRC
 
 * smartparens
@@ -543,27 +561,26 @@ https://fonts.google.com/specimen/Ubuntu+Mono
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
     :ensure t
-    :hook (('prog-mode                . 'smartparens-mode)
-           ('LaTeX-mode               . 'smartparens-mode)
-           ('eshell-mode              . 'smartparens-mode)
-           ('cider-mode               . 'smartparens-mode)
-           ('cider-repl-mode          . 'smartparens-mode)
-           ('haskell-interactive-mode . 'smartparens-mode))
+    :hook
+    (('prog-mode                . 'smartparens-mode)
+     ('LaTeX-mode               . 'smartparens-mode)
+     ('eshell-mode              . 'smartparens-mode)
+     ('cider-mode               . 'smartparens-mode)
+     ('cider-repl-mode          . 'smartparens-mode))
+
     :bind
-    (("C-M-a" . 'sp-beginning-of-sexp)
-     ("C-M-e" . 'sp-end-of-sexp)
-     ("C-M-f" . 'sp-forward-sexp)
-     ("C-M-b" . 'sp-backward-sexp)
-     ("C-M-n" . 'sp-next-sexp)
-     ("C-M-p" . 'sp-previous-sexp)
-     ("C-S-f" . 'sp-forward-symbol)
-     ("C-S-b" . 'sp-backward-symbol)
-     ("C-M-k" . 'sp-kill-sexp)
-     ("C-M-w" . 'sp-copy-sexp)
-     ("C-k"   . 'sp-kill-hybrid-sexp)
-     ("M-k"   . 'sp-backward-kill-sexp))
-    :config
-    (require 'smartparens-config))
+    (("C-M-a"     . 'sp-beginning-of-sexp)
+     ("C-M-e"     . 'sp-end-of-sexp)
+     ("C-M-f"     . 'sp-forward-sexp)
+     ("C-M-b"     . 'sp-backward-sexp)
+     ("C-M-n"     . 'sp-next-sexp)
+     ("C-M-p"     . 'sp-previous-sexp)
+     ("C-S-f"     . 'sp-forward-symbol)
+     ("C-S-b"     . 'sp-backward-symbol)
+     ("C-M-k"     . 'sp-kill-sexp)
+     ("C-M-w"     . 'sp-copy-sexp)
+     ("C-k"       . 'sp-kill-hybrid-sexp)
+     ("M-k"       . 'sp-backward-kill-sexp)))
 #+END_SRC
 
 * rainbow
@@ -574,7 +591,9 @@ https://fonts.google.com/specimen/Ubuntu+Mono
   :hook ('prog-mode . 'rainbow-delimiters-mode))
 #+END_SRC
 
-* eglot
+* coding
+
+** eglot
 
 #+begin_src elisp
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -603,10 +622,15 @@ https://fonts.google.com/specimen/Ubuntu+Mono
     :bind
     (("C-c e l" . 'eglot)
      ("C-c C-r" . 'eglot-rename)
-     ("C-c C-'" . 'eglot-code-actions)))
+     ("C-c C-'" . 'eglot-code-actions)
+
+     ("C-c f p" . 'flymake-goto-prev-error)
+     ("C-c f n" . 'flymake-goto-next-error)
+     ("C-c f b" . 'flymake-show-buffer-diagnostics)
+     ("C-c f s" . 'flymake-show-project-diagnostics)))
 #+end_src
 
-* clojure and cider
+** clojure and cider
 
 #+BEGIN_SRC emacs-lisp
   (use-package clojure-mode
@@ -666,41 +690,23 @@ https://fonts.google.com/specimen/Ubuntu+Mono
     (setq cider-repl-display-help-banner nil))
 #+END_SRC
 
-* python
-
-use lsp instead
+** python
 
 #+BEGIN_SRC emacs-lisp
-  ;; (defun python-mode-before-save-hook ()
-  ;;   (when (eq major-mode 'python-mode)
-  ;;     (elpy-format-code)))
-
-  ;; (use-package elpy
-  ;;   :ensure t
-  ;;   :defer 5
-  ;;   ;; M-<right> / M-<left> move block right/left
-  ;;   ;; M-<up>    / M-<down> move block up/down
-  ;;   :bind (("C-c M-f" . 'elpy-format-code)
-  ;;          ("C-M-n"   . 'elpy-nav-forward-block)
-  ;;          ("C-M-p"   . 'elpy-nav-backward-block))
-  ;;   :config (setq elpy-rpc-virtualenv-path 'current)
-  ;;   :hook ('before-save . #'python-mode-before-save-hook)
-  ;;   :init (advice-add 'python-mode :before 'elpy-enable))
 #+END_SRC
 
-* go
+** go
 
 #+begin_src emacs-lisp
   (use-package go-mode
     :ensure t
     :defer 5
-    ;; :hook ((go-mode . lsp-deferred)
-    ;;        (before-save . lsp-format-buffer)
-    ;;        (before-save . lsp-organize-imports))
-    )
+    :bind
+    (("C-c C-c C-t" . 'go-test-current-test)
+     ("C-c C-c C-f" . 'go-test-current-file)))
 #+end_src
 
-* rust
+** rust
 
 #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
@@ -710,25 +716,12 @@ use lsp instead
     (setq rust-format-on-save t))
 #+END_SRC
 
-* elixir
+** elixir
 
 #+BEGIN_SRC emacs-lisp
-  ;; (defun elixir-mode-before-save-hook ()
-  ;;   (when (eq major-mode 'elixir-mode)
-  ;;     (lsp-format-buffer)))
-
-  ;; (use-package elixir-mode
-  ;;   :ensure t
-  ;;   :defer 5
-  ;;   :hook ('before-save . #'elixir-mode-before-save-hook))
-
-  ;; (use-package exunit
-  ;;   :ensure t
-  ;;   :after elixir-mode
-  ;;   :bind (("C-c t a" . 'exunit-verify-all)
-  ;;          ("C-c t t" . 'exunit-verify)
-  ;;          ("C-c t s" . 'exunit-verify-single)))
 #+END_SRC
+
+** haskell
 
 * company
 
@@ -1311,19 +1304,6 @@ https://github.com/skeeto/elfeed
 https://lucidmanager.org/productivity/read-rss-feeds-with-emacs-and-elfeed/
 
 ** shortcuts
-
-RET: view selected entry in a buffer
-b: Open the article in the browser
-G: Fetch feed updates from the servers
-s: Update the search filter
-c: Clear the search filter
-r: Mark the entry as read
-u: Mark the entry as unread
-g: Refresh view of the feed listing (remove unread items)
-q: Quit the browser
-+: add a specific tag to selected entries
--: remove a specific tag from selected entries
-
 ** Here are some example filters.
 
 *** @6-months-ago +unread
@@ -1353,8 +1333,7 @@ Only show entries tagged as emacs from a specific feed.
           elfeed-show-entry-switch 'display-buffer)
 
     (setq elfeed-feeds
-          '(("https://planet.emacslife.com/atom.xml" emacs)
-            ("https://tdodge.consulting/blog/rss.xml" blog))))
+          '("https://tdodge.consulting/blog/rss.xml")))
 #+end_src
 
 * tab bar
@@ -1497,16 +1476,16 @@ C-c C-t vterm-copy-mode
 C-c C-l vterm-clear-scrollback
 
 ~brew install cmake libtool~
-
 compile libvterm is needed
+
 #+begin_src elisp
-  ;; (use-package vterm
-  ;;   :ensure t
-  ;;   :defer 5
-  ;;   :config
-  ;;   ;; (setq vterm-kill-buffer-on-exit t)
-  ;;   (setq vterm-copy-exclude-prompt nil))
-  ;; (global-set-key (kbd "C-c t") 'vterm-other-window)
+  (use-package vterm
+    :ensure t
+    :defer 5
+    :config
+    ;; (setq vterm-kill-buffer-on-exit t)
+    (setq vterm-copy-exclude-prompt nil))
+  (global-set-key (kbd "C-c C-t") 'vterm-other-window)
 #+end_src
 
 * Footnotes

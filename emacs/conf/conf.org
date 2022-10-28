@@ -2,61 +2,62 @@
 
 * shortcuts frequently used but easy to forget
 
-| command         | description                             |
-|-----------------+-----------------------------------------|
-| C-S-<backspace> | runs the command kill-whole-line        |
-| C-c M-k         | duplicate-line                          |
-| C-c C-k         | copy-line                               |
-| C-c b           | browse-url                              |
-| C-c r           | browse-at-remote                        |
-| C-x C-q         | Toggles read only mode                  |
-| C-c C-SPC       | whitespace-cleanup                      |
-| C-x /           | google this                             |
-| M-\             | delete-horizontal-space                 |
-| M-/             | dabbrev-expand                          |
-| M-!             | shell-command                           |
-| M-&             | Like M-!, but asynchronous              |
-|-----------------+-----------------------------------------|
-| M-j             | ivy-yank-word                           |
-| C-c k           | counsel-rg                              |
-| C-*             | swiper-thing-at-point                   |
-| M-o             | ivy-dispatching-done                    |
-|-----------------+-----------------------------------------|
-| M-}             | Move forward to end of paragraph        |
-| M-{             | Move backward to start of paragraph     |
-|-----------------+-----------------------------------------|
-| C-t             | Transpose characters                    |
-| M-t             | Transpose words                         |
-|-----------------+-----------------------------------------|
-| C-x ( and C-x ) | Starts and stops macro recording        |
-| C-x e           | Plays last macro                        |
-|-----------------+-----------------------------------------|
-| C-x 4 d/f/b     | Opens dired/file/buffer in other window |
-| C-x r m/l/b     | Set/List/Jump bookmark                  |
-| C-c o           | occur                                   |
-| M-o             | ace-window                              |
-| s-t             | treemacs                                |
-| C-c t           | libvterm                                |
-| s-p             | projectile                              |
-| C-x w           | elfeed                                  |
-| C-=             | expand-region                           |
-| s-c             | avy-goto-xxx                            |
-|-----------------+-----------------------------------------|
-| C-c e l         | eglot                                   |
-| C-c C-r         | eglot-rename                            |
-| C-c C-'         | eglot-code-actions                      |
-|                 |                                         |
-| C-M-i           | complete-symbol                         |
-| C-h .           | eldoc-doc-buffer                        |
-| M-?             | xref-find-references                    |
-| M-.             | xref-find-definitions                   |
-| M-,             | xref-pop-marker-stack                   |
-| s-/             | comment-region-or-line                  |
-| C-c M-p         | flymake-goto-prev-error                 |
-| C-c M-n         | flymake-goto-next-error                 |
-|-----------------+-----------------------------------------|
-| Org mode        | TODO                                    |
-|-----------------+-----------------------------------------|
+| command         | description                                       |
+|-----------------+---------------------------------------------------|
+| C-S-<backspace> | runs the command kill-whole-line                  |
+| C-c M-k         | duplicate-line                                    |
+| C-c C-k         | copy-line                                         |
+| C-c b           | browse-url                                        |
+| C-c r           | browse-at-remote                                  |
+| C-x C-q         | Toggles read only mode                            |
+| C-c C-SPC       | whitespace-cleanup                                |
+| C-x /           | google this                                       |
+| M-\             | delete-horizontal-space                           |
+| M-/             | dabbrev-expand                                    |
+| M-!             | shell-command                                     |
+| M-&             | Like M-!, but asynchronous                        |
+|-----------------+---------------------------------------------------|
+| M-j             | ivy-yank-word                                     |
+| C-c k           | counsel-rg                                        |
+| C-*             | swiper-thing-at-point                             |
+| M-o             | ivy-dispatching-done                              |
+| C-M-j           | Exits with the current input instead of candidate |
+|-----------------+---------------------------------------------------|
+| M-}             | Move forward to end of paragraph                  |
+| M-{             | Move backward to start of paragraph               |
+|-----------------+---------------------------------------------------|
+| C-t             | Transpose characters                              |
+| M-t             | Transpose words                                   |
+|-----------------+---------------------------------------------------|
+| C-x ( and C-x ) | Starts and stops macro recording                  |
+| C-x e           | Plays last macro                                  |
+|-----------------+---------------------------------------------------|
+| C-x 4 d/f/b     | Opens dired/file/buffer in other window           |
+| C-x r m/l/b     | Set/List/Jump bookmark                            |
+| C-c o           | occur                                             |
+| M-o             | ace-window                                        |
+| s-t             | treemacs                                          |
+| C-c t           | libvterm                                          |
+| s-p             | projectile                                        |
+| C-x w           | elfeed                                            |
+| C-=             | expand-region                                     |
+| s-c             | avy-goto-xxx                                      |
+|-----------------+---------------------------------------------------|
+| C-c e l         | eglot                                             |
+| C-c C-r         | eglot-rename                                      |
+| C-c C-'         | eglot-code-actions                                |
+|                 |                                                   |
+| C-M-i           | complete-symbol                                   |
+| C-h .           | eldoc-doc-buffer                                  |
+| M-?             | xref-find-references                              |
+| M-.             | xref-find-definitions                             |
+| M-,             | xref-pop-marker-stack                             |
+| s-/             | comment-region-or-line                            |
+| C-c M-p         | flymake-goto-prev-error                           |
+| C-c M-n         | flymake-goto-next-error                           |
+|-----------------+---------------------------------------------------|
+| Org mode        | TODO                                              |
+|-----------------+---------------------------------------------------|
 
 * speed init
 
@@ -99,10 +100,9 @@ find which makes init slow
 * diminish
 
 #+BEGIN_SRC emacs-lisp
-  (use-package diminish
-    :ensure t
-    :config
-    (require 'diminish))
+  ;; (use-package diminish
+  ;;   :ensure t
+  ;;   )
 #+END_SRC
 
 * backup
@@ -150,11 +150,12 @@ find which makes init slow
 
 visit the link below to download and install font
 
+https://www.jetbrains.com/lp/mono/
 https://fonts.google.com/specimen/Ubuntu+Mono
 
 #+BEGIN_SRC emacs-lisp
-  ;; (set-frame-font "JetBrains Mono 20" nil t) ; https://www.jetbrains.com/lp/mono/
-  (set-frame-font "Ubuntu Mono 20" nil t) ; resolve org-mode chinese/english align issue
+  (set-frame-font "JetBrains Mono 20" nil t) ; https://www.jetbrains.com/lp/mono/
+  ;; (set-frame-font "Ubuntu Mono 20" nil t) ; resolve org-mode chinese/english align issue
 #+END_SRC
 
 * global ui
@@ -264,20 +265,31 @@ https://fonts.google.com/specimen/Ubuntu+Mono
 * theme
 
 #+BEGIN_SRC emacs-lisp
-  (use-package doom-themes
+  ;; (use-package doom-themes
+  ;;   :ensure t
+  ;;   :config
+
+  ;;   ;; Global settings (defaults)
+  ;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+  ;;         doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  ;;   (load-theme 'doom-one t)
+
+  ;;   ;; Enable flashing mode-line on errors
+  ;;   (doom-themes-visual-bell-config)
+
+  ;;   ;; Corrects (and improves) org-mode's native fontification.
+  ;;   (doom-themes-org-config))
+
+
+  ;; M-x color-theme-sanityinc-tomorrow-day
+  ;; M-x color-theme-sanityinc-tomorrow-night
+  ;; M-x color-theme-sanityinc-tomorrow-blue
+  ;; M-x color-theme-sanityinc-tomorrow-bright
+  ;; M-x color-theme-sanityinc-tomorrow-eighties
+  (use-package color-theme-sanityinc-tomorrow
     :ensure t
     :config
-
-    ;; Global settings (defaults)
-    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-          doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    (load-theme 'doom-one t)
-
-    ;; Enable flashing mode-line on errors
-    (doom-themes-visual-bell-config)
-
-    ;; Corrects (and improves) org-mode's native fontification.
-    (doom-themes-org-config))
+    (require 'color-theme-sanityinc-tomorrow))
 
   ;; (use-package dracula-theme
   ;;   :ensure t
@@ -293,7 +305,8 @@ https://fonts.google.com/specimen/Ubuntu+Mono
   ;;   :ensure t
   ;;   :config
   ;;   ;; (load-theme 'solarized-light t)
-  ;;   (load-theme 'solarized-dark t))
+  ;;   (load-theme 'solarized-dark t)
+  ;;   )
 
   ;; (use-package spacemacs-theme
   ;;   :defer t
@@ -321,6 +334,15 @@ https://fonts.google.com/specimen/Ubuntu+Mono
     (require 'spaceline-config)
     (spaceline-emacs-theme))
 #+END_SRC
+
+#+begin_src elisp
+  ;; (use-package all-the-icons
+  ;;   :ensure t)
+
+  ;; (use-package doom-modeline
+  ;;   :ensure t
+  ;;   :hook (after-init . doom-modeline-mode))
+#+end_src
 
 * exec-path-from-shell
 
@@ -468,7 +490,11 @@ https://fonts.google.com/specimen/Ubuntu+Mono
 
 * magit & forge
 
-** cherry pick [fn:1] [fn:2]
+** cherry pick
+
+[[https://emacs.stackexchange.com/questions/10611/how-to-easily-cherry-pick-with-magit][cherry pick with magit]]
+[[https://www.emacswiki.org/emacs/MagitCherryPick][magit cherry pick]]
+
 
 - ~M-x magit-status~ to enter open a Magit buffer
 - ~b v~ to list current branches
@@ -973,22 +999,6 @@ https://fonts.google.com/specimen/Ubuntu+Mono
   (use-package json-mode
     :ensure t
     :defer 5)
-
-  (use-package dockerfile-mode
-    :ensure t
-    :defer 5)
-
-  (use-package docker-compose-mode
-    :ensure t
-    :defer 5)
-
-  (use-package ansible
-    :ensure t
-    :defer 5
-    :hook
-    (('yaml-mode . 'ansible))
-    :config
-    (setq ansible-vault-password-file "path/to/pwd/file"))
 #+END_SRC
 * avy
 [[https://github.com/abo-abo/avy][avy]]
@@ -1205,8 +1215,8 @@ https://fonts.google.com/specimen/Ubuntu+Mono
 | Alt+x | clm/open-command-log-buffer (show the key/command output buffer)   |
 
 #+BEGIN_SRC emacs-lisp
-  (use-package command-log-mode
-    :ensure t)
+  ;; (use-package command-log-mode
+  ;;   :ensure t)
 #+END_SRC
 
 * window enlarge
@@ -1249,14 +1259,6 @@ https://fonts.google.com/specimen/Ubuntu+Mono
 | M-s h r         | Highlights a regular expression      |
 | M-s h .         | Highlights symbol at the point       |
 | M-s h u         | Removes highlighting under the point |
-
-* quoted insert
-
-C-q ARG
-
-Read next input character and insert it.
-This is useful for inserting control characters.
-such as, you want to insert TAB, , etc.
 
 * dashboard
 
@@ -1488,7 +1490,5 @@ compile libvterm is needed
   (global-set-key (kbd "C-c C-t") 'vterm-other-window)
 #+end_src
 
-* Footnotes
 
-[fn:1] [[https://emacs.stackexchange.com/questions/10611/how-to-easily-cherry-pick-with-magit][cherry pick with magit]]
-[fn:2] [[https://www.emacswiki.org/emacs/MagitCherryPick][magit cherry pick]]
+#+PROPERTY: header-args :comments yes :results silent

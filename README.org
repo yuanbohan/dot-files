@@ -2,7 +2,9 @@
 #+TITLE: dot files
 #+AUTHOR: Yuanbo Han
 
-archlinux with i3wm, emacs, terminator, fish, colemak layout
+archlinux with i3wm, emacs, zsh, alacritty, tmux, firefox,
+
+refer post installation https://github.com/yuanbohan/archlinux
 
 #+caption: archlinux with i3,emacs,terminator,fish
 [[./screenshot.png]]

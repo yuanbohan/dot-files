@@ -112,12 +112,14 @@ alias sp="sudo pacman"
 alias emacs='emacs -Q'
 alias k='kubectl'
 alias vim='nvim'
-
-## rust
-. "$HOME/.cargo/env"
+alias tf='terraform'
 
 ## To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 ## autojump-rs
 [[ -s /etc/profile.d/autojump.sh ]] && source /etc/profile.d/autojump.sh
+
+# terraform
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/local/bin/terraform terraform
